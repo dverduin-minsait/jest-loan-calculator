@@ -1,14 +1,5 @@
 import { LoanCard } from "./LoanCard";
-
-interface Loan {
-  id: string;
-  name: string;
-  amount: number;
-  interest: number;
-  partialAmortRate: number;
-  totalAmortRate: number;
-  months: number;
-}
+import type { Loan } from "@/types/loan";
 
 interface LoanListProps {
   loans: Loan[];

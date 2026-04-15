@@ -4,16 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-
-interface Loan {
-  id: string;
-  name: string;
-  amount: number;
-  interest: number;
-  partialAmortRate: number;
-  totalAmortRate: number;
-  months: number;
-}
+import type { Loan } from "@/types/loan";
 
 interface LoanCardProps {
   loan: Loan;

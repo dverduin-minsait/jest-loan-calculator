@@ -2,16 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-interface Loan {
-  id: string;
-  name: string;
-  amount: number;
-  interest: number;
-  partialAmortRate: number;
-  totalAmortRate: number;
-  months: number;
-}
+import type { Loan } from "@/types/loan";
 
 interface LoanFormProps {
   loan?: Loan;
