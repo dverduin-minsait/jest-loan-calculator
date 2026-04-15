@@ -30,6 +30,8 @@ export interface AmortizationAdvice {
   /** The loan that will save the most total interest for a given extra payment. */
   bestLoanId: string;
   bestLoanName: string;
+  /** Warning message if atMonth is beyond some loan's term, causing zero savings. */
+  warning?: string;
   /** Ranking of all loans from most to least beneficial to amortize. */
   ranking: {
     loanId: string;
@@ -244,9 +246,16 @@ export function findOptimalAmortization(
     })
     .sort((a, b) => b.interestSaved - a.interestSaved);
 
+  const expiredLoans = loans.filter((l) => atMonth > l.months);
+  const warning =
+    expiredLoans.length > 0
+      ? `Month ${atMonth} is beyond the term of: ${expiredLoans.map((l) => l.name).join(", ")}. These loans will show zero savings.`
+      : undefined;
+
   return {
     bestLoanId: ranking[0].loanId,
     bestLoanName: ranking[0].loanName,
+    warning,
     ranking,
   };
 }

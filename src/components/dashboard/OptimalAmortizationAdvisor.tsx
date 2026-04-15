@@ -114,6 +114,13 @@ export function OptimalAmortizationAdvisor({
 
       {result && (
         <div className="space-y-4">
+          {/* Warning if atMonth is beyond some loans' term */}
+          {result.warning && (
+            <div role="alert" className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+              ⚠️ {result.warning}
+            </div>
+          )}
+
           {/* Winner banner */}
           <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3">
             <span className="text-2xl">🏆</span>

@@ -251,4 +251,16 @@ describe("findOptimalAmortization", () => {
     const advice = findOptimalAmortization(loans, 2000, 3);
     expect(advice.ranking).toHaveLength(loans.length);
   });
+
+  it("sets warning when atMonth is beyond a loan's term", () => {
+    const shortLoan: LoanData = { id: "short", name: "Short", amount: 5000, interest: 5, months: 6 };
+    const longLoan: LoanData = { id: "long", name: "Long", amount: 10000, interest: 4, months: 24 };
+    const advice = findOptimalAmortization([shortLoan, longLoan], 1000, 10);
+    expect(advice.warning).toMatch(/Month 10 is beyond the term of: Short/);
+  });
+
+  it("warning is undefined when atMonth is within all loan terms", () => {
+    const advice = findOptimalAmortization([sampleLoan], 2000, 3);
+    expect(advice.warning).toBeUndefined();
+  });
 });
