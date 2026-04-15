@@ -33,6 +33,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (String(name).length > 255) {
+    return NextResponse.json(
+      { error: "Loan name must be 255 characters or fewer" },
+      { status: 400 }
+    );
+  }
+
   const loan = await prisma.loan.create({
     data: {
       name: String(name),

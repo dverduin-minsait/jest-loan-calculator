@@ -91,6 +91,19 @@ describe("POST /api/users", () => {
     expect(res.status).toBe(400);
   });
 
+  it("returns 400 when name exceeds 255 characters", async () => {
+    const req = makeRequest({ email: "a@b.com", name: "x".repeat(256), password: "password123" });
+    const res = await register(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when email exceeds 255 characters", async () => {
+    const longEmail = "a".repeat(250) + "@b.com";
+    const req = makeRequest({ email: longEmail, name: "User", password: "password123" });
+    const res = await register(req);
+    expect(res.status).toBe(400);
+  });
+
   it("returns 409 when email is already registered", async () => {
     mockFindUnique.mockResolvedValueOnce(USER as never);
     const req = makeRequest({

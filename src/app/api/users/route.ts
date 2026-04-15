@@ -27,6 +27,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (String(email).length > 255) {
+      return NextResponse.json(
+        { error: "Email must be 255 characters or fewer" },
+        { status: 400 }
+      );
+    }
+
+    if (String(name).length > 255) {
+      return NextResponse.json(
+        { error: "Name must be 255 characters or fewer" },
+        { status: 400 }
+      );
+    }
+
     if (password.length < 8) {
       return NextResponse.json(
         { error: "Password must be at least 8 characters" },
