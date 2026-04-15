@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Toast } from "@/components/ui/Toast";
 import type { Loan } from "@/types/loan";
 
 interface LoanCardProps {
@@ -13,14 +14,27 @@ interface LoanCardProps {
 export function LoanCard({ loan }: LoanCardProps) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   async function handleDelete() {
-    await fetch(`/api/loans/${loan.id}`, { method: "DELETE" });
-    router.refresh();
+    const res = await fetch(`/api/loans/${loan.id}`, { method: "DELETE" });
+    if (res.ok) {
+      setToast({ message: `"${loan.name}" deleted.`, type: "success" });
+      router.refresh();
+    } else {
+      setToast({ message: "Failed to delete loan. Please try again.", type: "error" });
+    }
   }
 
   return (
     <>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onDismiss={() => setToast(null)}
+        />
+      )}
       {confirming && (
         <ConfirmDialog
           message={`Delete "${loan.name}"? This cannot be undone.`}

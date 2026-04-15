@@ -57,4 +57,18 @@ describe("LoanCard delete flow", () => {
     });
     expect(mockRefresh).toHaveBeenCalled();
   });
+
+  it("shows error toast when delete fails", async () => {
+    (fetch as jest.Mock).mockResolvedValueOnce({ ok: false });
+
+    render(<LoanCard loan={LOAN} />);
+    fireEvent.click(screen.getByRole("button", { name: /delete/i }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("button", { name: /delete/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("status")).toHaveTextContent(/failed to delete/i);
+    });
+    expect(mockRefresh).not.toHaveBeenCalled();
+  });
 });
