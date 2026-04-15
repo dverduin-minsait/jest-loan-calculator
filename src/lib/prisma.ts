@@ -10,12 +10,16 @@ function createPrismaClient(): PrismaClient {
     ? path.resolve(process.cwd(), dbUrl.slice("file:".length))
     : dbUrl;
 
+  // Enable WAL mode once (it's a persistent file-level setting).
+  // We open briefly to run the pragma, then close so the adapter gets its own
+  // connection via the new config-based factory API introduced in Prisma 7.7.0.
   const db = new Database(dbPath);
-  // Enable WAL mode: allows concurrent reads alongside writes, improving
-  // throughput under the multi-request Next.js server process.
   db.pragma("journal_mode = WAL");
+  db.close();
 
-  const adapter = new PrismaBetterSqlite3(db);
+  // Prisma 7.7.0: PrismaBetterSqlite3 is now a factory that takes { url } and
+  // creates the connection internally (previously accepted a Database instance).
+  const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
   return new PrismaClient({ adapter });
 }
 
