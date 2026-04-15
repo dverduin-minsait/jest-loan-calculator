@@ -2,15 +2,17 @@
 
 interface ConfirmDialogProps {
   message: string;
+  title?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
-export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogProps) {
+export function ConfirmDialog({ message, title = "Confirm action", onConfirm, onCancel }: ConfirmDialogProps) {
   return (
     <div
       role="dialog"
       aria-modal="true"
+      aria-labelledby="confirm-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center"
     >
       {/* Backdrop */}
@@ -21,6 +23,7 @@ export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogPro
       />
       {/* Panel */}
       <div className="relative bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-sm w-full mx-4">
+        <h2 id="confirm-dialog-title" className="sr-only">{title}</h2>
         <p className="text-gray-900 text-sm mb-5">{message}</p>
         <div className="flex justify-end gap-3">
           <button

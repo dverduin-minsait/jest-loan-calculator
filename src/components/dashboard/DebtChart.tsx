@@ -51,7 +51,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
     : undefined; // let Recharts decide for short loans
 
   return (
-    <ResponsiveContainer width="100%" height={360}>
+    <ResponsiveContainer width="100%" height={360} aria-label="Debt overview chart showing loan balances and cumulative payments over time">
       <LineChart data={data} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
         <XAxis

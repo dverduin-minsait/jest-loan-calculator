@@ -19,6 +19,7 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
   const [extraAmount, setExtraAmount] = useState("");
   const [extras, setExtras] =
     useState<Record<string, ExtraPayment> | undefined>(undefined);
+  const [warning, setWarning] = useState<string | null>(null);
 
   const selectedLoan = loans.find((l) => l.id === selectedLoanId);
   const maxMonth = selectedLoan?.months ?? 1;
@@ -27,17 +28,22 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
     e.preventDefault();
     if (!selectedLoan) return;
 
+    const parsedMonth = Number(month);
+    if (parsedMonth > selectedLoan.months) {
+      setWarning(
+        `Month ${parsedMonth} is beyond "${selectedLoan.name}"'s term of ${selectedLoan.months} months. The extra payment cannot be applied — choose a month within the loan's term.`
+      );
+      setExtras(undefined);
+      return;
+    }
+    setWarning(null);
+
     const extra: ExtraPayment = {
-      month: Number(month),
+      month: parsedMonth,
       amount: Number(extraAmount),
     };
 
     setExtras({ [selectedLoanId]: extra });
-  }
-
-  function handleReset() {
-    setExtras(undefined);
-    setExtraAmount("");
   }
 
   const originalSchedule = selectedLoan
@@ -129,13 +135,19 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
         {extras && (
           <button
             type="button"
-            onClick={handleReset}
+            onClick={() => { setExtras(undefined); setWarning(null); setExtraAmount(""); }}
             className="py-2 px-4 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
           >
             Reset
           </button>
         )}
       </form>
+
+      {warning && (
+        <div role="alert" className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+          {warning}
+        </div>
+      )}
 
       {modifiedSchedule && extraPayment && selectedLoan && (
         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm space-y-1">

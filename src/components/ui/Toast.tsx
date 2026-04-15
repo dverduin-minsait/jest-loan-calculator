@@ -29,8 +29,8 @@ export function Toast({ message, type = "success", duration = 3000, onDismiss }:
 
   return (
     <div
-      role="status"
-      aria-live="polite"
+      role={type === "error" ? "alert" : "status"}
+      aria-live={type === "error" ? "assertive" : "polite"}
       className={`fixed bottom-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium ${colors} animate-fade-in`}
     >
       {message}

@@ -67,7 +67,7 @@ describe("LoanCard delete flow", () => {
     fireEvent.click(within(dialog).getByRole("button", { name: /delete/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(/failed to delete/i);
+      expect(screen.getByRole("alert")).toHaveTextContent(/failed to delete/i);
     });
     expect(mockRefresh).not.toHaveBeenCalled();
   });

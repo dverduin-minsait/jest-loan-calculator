@@ -21,7 +21,7 @@ export function PaginationBar({ page, totalPages }: PaginationBarProps) {
           Previous
         </Link>
       ) : (
-        <span className="rounded-md border px-3 py-1.5 text-sm text-gray-300 cursor-default">
+        <span aria-disabled="true" className="rounded-md border px-3 py-1.5 text-sm text-gray-300 cursor-default">
           Previous
         </span>
       )}
@@ -38,7 +38,7 @@ export function PaginationBar({ page, totalPages }: PaginationBarProps) {
           Next
         </Link>
       ) : (
-        <span className="rounded-md border px-3 py-1.5 text-sm text-gray-300 cursor-default">
+        <span aria-disabled="true" className="rounded-md border px-3 py-1.5 text-sm text-gray-300 cursor-default">
           Next
         </span>
       )}
