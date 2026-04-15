@@ -57,7 +57,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
           width={80}
         />
         <Tooltip
-          formatter={(value: number) => [formatCurrency(value), ""]}
+          formatter={(value) => [typeof value === "number" ? formatCurrency(value) : String(value ?? ""), ""]}
           labelFormatter={(label) => `Month ${label}`}
         />
         <Legend verticalAlign="top" />
