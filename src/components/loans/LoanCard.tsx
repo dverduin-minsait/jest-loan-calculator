@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface Loan {
   id: string;
@@ -19,14 +21,22 @@ interface LoanCardProps {
 
 export function LoanCard({ loan }: LoanCardProps) {
   const router = useRouter();
+  const [confirming, setConfirming] = useState(false);
 
   async function handleDelete() {
-    if (!confirm(`Delete "${loan.name}"?`)) return;
     await fetch(`/api/loans/${loan.id}`, { method: "DELETE" });
     router.refresh();
   }
 
   return (
+    <>
+      {confirming && (
+        <ConfirmDialog
+          message={`Delete "${loan.name}"? This cannot be undone.`}
+          onConfirm={() => { setConfirming(false); handleDelete(); }}
+          onCancel={() => setConfirming(false)}
+        />
+      )}
     <div className="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
       <div className="space-y-1">
         <p className="font-medium text-gray-900">{loan.name}</p>
@@ -67,12 +77,13 @@ export function LoanCard({ loan }: LoanCardProps) {
           Edit
         </Link>
         <button
-          onClick={handleDelete}
+          onClick={() => setConfirming(true)}
           className="text-sm text-red-600 hover:underline"
         >
           Delete
         </button>
       </div>
     </div>
+    </>
   );
 }
