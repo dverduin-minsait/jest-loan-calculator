@@ -24,6 +24,10 @@ jest.mock("bcryptjs", () => ({
   compare: jest.fn(),
 }));
 
+jest.mock("@/lib/rate-limit", () => ({
+  checkRateLimit: jest.fn().mockReturnValue(true), // allow all by default
+}));
+
 // ---- Imports (after mocks) -------------------------------------------------
 
 import { NextRequest } from "next/server";
@@ -36,6 +40,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import bcrypt from "bcryptjs";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const mockAuth = auth as jest.MockedFunction<typeof auth>;
 const mockFindUnique = prisma.user.findUnique as jest.MockedFunction<
@@ -48,6 +53,7 @@ const mockDelete = prisma.user.delete as jest.MockedFunction<
   typeof prisma.user.delete
 >;
 const mockHash = bcrypt.hash as jest.MockedFunction<typeof bcrypt.hash>;
+const mockCheckRateLimit = checkRateLimit as jest.MockedFunction<typeof checkRateLimit>;
 
 const SESSION = {
   user: { id: "user-1", email: "a@b.com", name: "User A" },
@@ -73,6 +79,13 @@ function makeRequest(body?: object, method = "POST") {
 // ---- POST /api/users (register) -------------------------------------------
 
 describe("POST /api/users", () => {
+  it("returns 429 when rate limit is exceeded", async () => {
+    mockCheckRateLimit.mockReturnValueOnce(false);
+    const req = makeRequest({ email: "a@b.com", name: "User", password: "password123" });
+    const res = await register(req);
+    expect(res.status).toBe(429);
+  });
+
   it("returns 400 when fields are missing", async () => {
     const req = makeRequest({ email: "a@b.com" });
     const res = await register(req);

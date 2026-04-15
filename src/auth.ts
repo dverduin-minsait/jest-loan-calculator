@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "@/auth.config";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 /**
  * A pre-computed bcrypt hash used as a timing-safe dummy.
@@ -11,6 +12,10 @@ import { authConfig } from "@/auth.config";
  */
 const DUMMY_HASH =
   "$2a$12$dummy.hash.to.prevent.user.enumeration.via.timing.attacks";
+
+/** Max 10 login attempts per email per 15 minutes */
+const LOGIN_MAX = 10;
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -25,6 +30,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = credentials?.password as string | undefined;
 
         if (!email || !password) return null;
+
+        // Rate-limit login attempts per email address
+        if (!checkRateLimit(`login:${email}`, LOGIN_MAX, LOGIN_WINDOW_MS)) {
+          return null;
+        }
 
         const user = await prisma.user.findUnique({ where: { email } });
 
