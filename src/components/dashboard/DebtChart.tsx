@@ -77,7 +77,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
             key={`${loan.id}-paid`}
             type="monotone"
             dataKey={`${loan.id}_paid`}
-            name={`${loan.name} (paid)`}
+            name={`${loan.name} (cumulative paid)`}
             stroke={COLORS[i % COLORS.length]}
             strokeWidth={2}
             strokeDasharray="5 3"
@@ -90,18 +90,20 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
         <Line
           type="monotone"
           dataKey="total"
-          name="Total balance"
+          name="Total balance remaining"
           stroke="#1f2937"
           strokeWidth={2.5}
           strokeDasharray="6 3"
           dot={false}
         />
 
-        {/* Total cumulative paid */}
+        {/* Total cumulative paid — the running sum of all payments across all loans.
+            This line climbs upward; where it ends up above the original principal
+            shows you exactly how much interest you paid over the life of the loans. */}
         <Line
           type="monotone"
           dataKey="totalPaid"
-          name="Total paid"
+          name="Total paid (all loans, cumulative)"
           stroke="#6b7280"
           strokeWidth={2.5}
           strokeDasharray="6 3"
