@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { LoanCreateSchema } from "@/lib/schemas";
 
 export async function GET() {
   const session = await auth();
@@ -23,45 +24,23 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, amount, interest, partialAmortRate, totalAmortRate, months } =
-    body;
-
-  if (!name || amount == null || interest == null || months == null) {
+  const parsed = LoanCreateSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "Missing required fields" },
+      { error: parsed.error.issues[0].message },
       { status: 400 }
     );
   }
-
-  if (String(name).length > 255) {
-    return NextResponse.json(
-      { error: "Loan name must be 255 characters or fewer" },
-      { status: 400 }
-    );
-  }
-
-  const numAmount = Number(amount);
-  const numInterest = Number(interest);
-  const numMonths = Number(months);
-
-  if (isNaN(numAmount) || numAmount < 0) {
-    return NextResponse.json({ error: "Amount must be a non-negative number" }, { status: 400 });
-  }
-  if (isNaN(numInterest) || numInterest < 0) {
-    return NextResponse.json({ error: "Interest must be a non-negative number" }, { status: 400 });
-  }
-  if (!Number.isInteger(numMonths) || numMonths < 1) {
-    return NextResponse.json({ error: "Months must be a positive integer" }, { status: 400 });
-  }
+  const { name, amount, interest, partialAmortRate, totalAmortRate, months } = parsed.data;
 
   const loan = await prisma.loan.create({
     data: {
-      name: String(name),
-      amount: numAmount,
-      interest: numInterest,
-      partialAmortRate: Number(partialAmortRate ?? 0),
-      totalAmortRate: Number(totalAmortRate ?? 0),
-      months: numMonths,
+      name,
+      amount,
+      interest,
+      partialAmortRate,
+      totalAmortRate,
+      months,
       userId: session.user.id,
     },
   });

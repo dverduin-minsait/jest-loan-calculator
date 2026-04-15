@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { LoanUpdateSchema } from "@/lib/schemas";
 
 export async function GET(
   _req: NextRequest,
@@ -40,23 +41,17 @@ export async function PUT(
   }
 
   const body = await req.json();
-  const { name, amount, interest, partialAmortRate, totalAmortRate, months } =
-    body;
+  const parsed = LoanUpdateSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0].message },
+      { status: 400 }
+    );
+  }
 
   const updated = await prisma.loan.update({
     where: { id },
-    data: {
-      ...(name !== undefined && { name: String(name) }),
-      ...(amount !== undefined && { amount: Number(amount) }),
-      ...(interest !== undefined && { interest: Number(interest) }),
-      ...(partialAmortRate !== undefined && {
-        partialAmortRate: Number(partialAmortRate),
-      }),
-      ...(totalAmortRate !== undefined && {
-        totalAmortRate: Number(totalAmortRate),
-      }),
-      ...(months !== undefined && { months: Number(months) }),
-    },
+    data: parsed.data,
   });
 
   return NextResponse.json(updated);
