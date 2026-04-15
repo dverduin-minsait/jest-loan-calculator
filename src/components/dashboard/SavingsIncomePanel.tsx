@@ -19,13 +19,15 @@ export function SavingsIncomePanel({
   const [income, setIncome] = useState(initialIncome.toString());
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setSaved(false);
+    setError("");
 
-    await fetch(`/api/users/${userId}`, {
+    const res = await fetch(`/api/users/${userId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -35,6 +37,13 @@ export function SavingsIncomePanel({
     });
 
     setSaving(false);
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Failed to save. Please try again.");
+      return;
+    }
+
     setSaved(true);
     router.refresh();
     setTimeout(() => setSaved(false), 2000);
@@ -90,6 +99,11 @@ export function SavingsIncomePanel({
           {saving ? "Saving…" : saved ? "Saved ✓" : "Save"}
         </button>
       </form>
+      {error && (
+        <p role="alert" className="mt-2 text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
