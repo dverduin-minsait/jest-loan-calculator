@@ -5,6 +5,7 @@ import { LoanList } from "@/components/loans/LoanList";
 import Link from "next/link";
 
 export default async function LoansPage() {
+  // Layout already redirects unauthenticated users; auth() here gets the session.
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 

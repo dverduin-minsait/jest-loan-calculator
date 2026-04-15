@@ -9,6 +9,7 @@ import { LoanList } from "@/components/loans/LoanList";
 import Link from "next/link";
 
 export default async function DashboardPage() {
+  // Layout already redirects unauthenticated users; auth() here gets the session for DB queries.
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
