@@ -33,6 +33,9 @@ function formatCurrency(value: number) {
 
 export function DebtChart({ loans, extras }: DebtChartProps) {
   const data = generateChartData(loans, extras);
+  const maxMonths = data.length;
+  // Use year labels when the longest loan exceeds 24 months
+  const useYears = maxMonths > 24;
 
   if (data.length === 0) {
     return (
@@ -42,13 +45,20 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
     );
   }
 
+  // For long loans, only tick every 12 months (yearly)
+  const xTicks = useYears
+    ? Array.from({ length: Math.ceil(maxMonths / 12) }, (_, i) => (i + 1) * 12).filter((m) => m <= maxMonths)
+    : undefined; // let Recharts decide for short loans
+
   return (
     <ResponsiveContainer width="100%" height={360}>
       <LineChart data={data} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
         <XAxis
           dataKey="month"
-          label={{ value: "Month", position: "insideBottom", offset: -2 }}
+          ticks={xTicks}
+          tickFormatter={(month) => useYears ? `Y${Math.round(month / 12)}` : `${month}`}
+          label={{ value: useYears ? "Year" : "Month", position: "insideBottom", offset: -2 }}
           tick={{ fontSize: 12 }}
         />
         <YAxis
