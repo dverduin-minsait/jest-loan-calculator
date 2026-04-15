@@ -126,6 +126,27 @@ describe("POST /api/loans", () => {
     expect(res.status).toBe(400);
   });
 
+  it("returns 400 when amount is negative", async () => {
+    mockAuth.mockResolvedValueOnce(SESSION as never);
+    const req = makeRequest({ name: "Loan", amount: -1000, interest: 5, months: 12 }, "POST");
+    const res = await postLoan(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when interest is negative", async () => {
+    mockAuth.mockResolvedValueOnce(SESSION as never);
+    const req = makeRequest({ name: "Loan", amount: 1000, interest: -1, months: 12 }, "POST");
+    const res = await postLoan(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when months is zero or negative", async () => {
+    mockAuth.mockResolvedValueOnce(SESSION as never);
+    const req = makeRequest({ name: "Loan", amount: 1000, interest: 5, months: 0 }, "POST");
+    const res = await postLoan(req);
+    expect(res.status).toBe(400);
+  });
+
   it("creates a loan and returns 201", async () => {
     mockAuth.mockResolvedValueOnce(SESSION as never);
     mockCreate.mockResolvedValueOnce(LOAN as never);

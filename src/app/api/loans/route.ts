@@ -40,14 +40,28 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const numAmount = Number(amount);
+  const numInterest = Number(interest);
+  const numMonths = Number(months);
+
+  if (isNaN(numAmount) || numAmount < 0) {
+    return NextResponse.json({ error: "Amount must be a non-negative number" }, { status: 400 });
+  }
+  if (isNaN(numInterest) || numInterest < 0) {
+    return NextResponse.json({ error: "Interest must be a non-negative number" }, { status: 400 });
+  }
+  if (!Number.isInteger(numMonths) || numMonths < 1) {
+    return NextResponse.json({ error: "Months must be a positive integer" }, { status: 400 });
+  }
+
   const loan = await prisma.loan.create({
     data: {
       name: String(name),
-      amount: Number(amount),
-      interest: Number(interest),
+      amount: numAmount,
+      interest: numInterest,
       partialAmortRate: Number(partialAmortRate ?? 0),
       totalAmortRate: Number(totalAmortRate ?? 0),
-      months: Number(months),
+      months: numMonths,
       userId: session.user.id,
     },
   });
