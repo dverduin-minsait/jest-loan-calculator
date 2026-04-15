@@ -208,7 +208,6 @@ Key decisions are documented as Architecture Decision Records in [`docs/adr/`](d
 - `@auth/prisma-adapter` is listed as a dependency but is not used.
 - No E2E tests (Playwright / Cypress).
 - No middleware.ts — route protection is at layout level, not edge level.
-- All amounts are displayed in EUR; there is no currency field on loans.
 - No loan start date — all calculations assume month 1 = today.
 
 ---
