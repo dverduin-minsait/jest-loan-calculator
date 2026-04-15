@@ -47,6 +47,24 @@ export interface AmortizationAdvice {
   }[];
 }
 
+export interface AvalancheSimulationMonth {
+  month: number;
+  /** Remaining balance for each loan keyed by loan ID. */
+  balances: Record<string, number>;
+  /** Extra payment allocated to each loan this month, keyed by loan ID. */
+  extraAllocated: Record<string, number>;
+}
+
+export interface AvalancheSimulationResult {
+  timeline: AvalancheSimulationMonth[];
+  totalInterestWithExtra: number;
+  totalInterestBaseline: number;
+  interestSaved: number;
+  /** Positive = simulation finishes sooner than baseline. */
+  monthsSaved: number;
+  payoffOrder: { loanId: string; loanName: string; month: number }[];
+}
+
 /**
  * French amortization: calculates the fixed monthly payment.
  * Formula: P * r * (1+r)^n / ((1+r)^n - 1)
@@ -272,5 +290,126 @@ export function findOptimalAmortization(
     bestLoanName: ranking[0].loanName,
     warning,
     ranking,
+  };
+}
+
+/**
+ * Simulates the avalanche method applied monthly.
+ * Each month the extra capacity (which grows as loans pay off) is directed to
+ * the highest-interest-rate active loan first.
+ */
+export function simulateMonthlyAvalanche(
+  loans: LoanData[],
+  extraMonthly: number
+): AvalancheSimulationResult {
+  if (loans.length === 0) {
+    throw new Error("No loans provided");
+  }
+
+  const regularPayment: Record<string, number> = {};
+  const monthlyRate: Record<string, number> = {};
+  const balances: Record<string, number> = {};
+  const totalInterestPaid: Record<string, number> = {};
+
+  for (const loan of loans) {
+    regularPayment[loan.id] = calculateMonthlyPayment(
+      loan.amount,
+      loan.interest,
+      loan.months
+    );
+    monthlyRate[loan.id] = loan.interest / 100 / 12;
+    balances[loan.id] = loan.amount;
+    totalInterestPaid[loan.id] = 0;
+  }
+
+  const timeline: AvalancheSimulationMonth[] = [];
+  const payoffOrder: { loanId: string; loanName: string; month: number }[] = [];
+  const paidOff = new Set<string>();
+  let freedCapacity = 0; // grows as loans are paid off
+
+  const maxMonths = Math.max(...loans.map((l) => l.months)) * 2;
+
+  for (let m = 1; m <= maxMonths; m++) {
+    const allDone = loans.every((l) => paidOff.has(l.id));
+    if (allDone) break;
+
+    const extraAllocated: Record<string, number> = {};
+    for (const loan of loans) extraAllocated[loan.id] = 0;
+
+    // 1. Apply regular payments on all active loans
+    const newlyPaidOff: string[] = [];
+    for (const loan of loans) {
+      if (paidOff.has(loan.id)) continue;
+      const b = balances[loan.id];
+      const r = monthlyRate[loan.id];
+      const interestThisMonth = b * r;
+      const principalPaid = Math.min(
+        regularPayment[loan.id] - interestThisMonth,
+        b
+      );
+      const newBalance = Math.max(0, b - principalPaid);
+      totalInterestPaid[loan.id] += interestThisMonth;
+      balances[loan.id] = newBalance < 0.005 ? 0 : newBalance;
+      if (balances[loan.id] === 0) newlyPaidOff.push(loan.id);
+    }
+
+    // 2. Distribute total extra (original + freed) to highest-rate active loans
+    let remainingExtra = extraMonthly + freedCapacity;
+    const activeLoans = loans
+      .filter((l) => !paidOff.has(l.id) && !newlyPaidOff.includes(l.id))
+      .sort((a, b) => b.interest - a.interest);
+
+    for (const loan of activeLoans) {
+      if (remainingExtra <= 0) break;
+      const b = balances[loan.id];
+      const extra = Math.min(remainingExtra, b);
+      balances[loan.id] = b - extra < 0.005 ? 0 : b - extra;
+      extraAllocated[loan.id] = extra;
+      remainingExtra -= extra;
+      if (balances[loan.id] === 0 && !newlyPaidOff.includes(loan.id)) {
+        newlyPaidOff.push(loan.id);
+      }
+    }
+
+    // 3. Record payoffs and accumulate freed capacity for next month
+    for (const id of newlyPaidOff) {
+      if (!paidOff.has(id)) {
+        paidOff.add(id);
+        const loan = loans.find((l) => l.id === id)!;
+        payoffOrder.push({ loanId: id, loanName: loan.name, month: m });
+        freedCapacity += regularPayment[id];
+      }
+    }
+
+    timeline.push({
+      month: m,
+      balances: { ...balances },
+      extraAllocated,
+    });
+  }
+
+  // Baseline (no extra payments)
+  let baselineInterest = 0;
+  let baselineLastMonth = 0;
+  for (const loan of loans) {
+    const schedule = generateAmortizationSchedule(loan);
+    baselineInterest += totalInterest(schedule);
+    const lastMonth = schedule[schedule.length - 1]?.month ?? 0;
+    baselineLastMonth = Math.max(baselineLastMonth, lastMonth);
+  }
+
+  const simTotalInterest = Object.values(totalInterestPaid).reduce(
+    (sum, v) => sum + v,
+    0
+  );
+  const simLastMonth = timeline[timeline.length - 1]?.month ?? 0;
+
+  return {
+    timeline,
+    totalInterestWithExtra: round(simTotalInterest),
+    totalInterestBaseline: round(baselineInterest),
+    interestSaved: round(baselineInterest - simTotalInterest),
+    monthsSaved: baselineLastMonth - simLastMonth,
+    payoffOrder,
   };
 }

@@ -5,6 +5,7 @@ import { SavingsIncomePanel } from "@/components/dashboard/SavingsIncomePanel";
 import { DebtChart } from "@/components/dashboard/DebtChart";
 import { AmortizationCalculator } from "@/components/dashboard/AmortizationCalculator";
 import { OptimalAmortizationAdvisor } from "@/components/dashboard/OptimalAmortizationAdvisor";
+import { AvalancheSimulator } from "@/components/dashboard/AvalancheSimulator";
 import { LoanList } from "@/components/loans/LoanList";
 import { LoanSummaryCard } from "@/components/dashboard/LoanSummaryCard";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
@@ -78,6 +79,9 @@ export default async function DashboardPage() {
 
           <ErrorBoundary>
             <OptimalAmortizationAdvisor loans={loanData} />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <AvalancheSimulator loans={loanData} />
           </ErrorBoundary>
         </>
       ) : (

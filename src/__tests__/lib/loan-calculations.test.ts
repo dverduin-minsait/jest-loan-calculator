@@ -4,6 +4,7 @@ import {
   applyExtraAmortization,
   generateChartData,
   findOptimalAmortization,
+  simulateMonthlyAvalanche,
   type LoanData,
 } from "@/lib/loan-calculations";
 
@@ -290,5 +291,64 @@ describe("findOptimalAmortization", () => {
   it("warning is undefined when atMonth is within all loan terms", () => {
     const advice = findOptimalAmortization([sampleLoan], 2000, 3);
     expect(advice.warning).toBeUndefined();
+  });
+});
+
+describe("simulateMonthlyAvalanche", () => {
+  const highRateLoan: LoanData = {
+    id: "high",
+    name: "High Rate",
+    amount: 5000,
+    interest: 12,
+    months: 24,
+  };
+  const lowRateLoan: LoanData = {
+    id: "low",
+    name: "Low Rate",
+    amount: 5000,
+    interest: 3,
+    months: 24,
+  };
+
+  it("throws when no loans are provided", () => {
+    expect(() => simulateMonthlyAvalanche([], 100)).toThrow();
+  });
+
+  it("extra payments reduce total interest vs baseline", () => {
+    const result = simulateMonthlyAvalanche([sampleLoan], 200);
+    expect(result.interestSaved).toBeGreaterThan(0);
+    expect(result.totalInterestWithExtra).toBeLessThan(result.totalInterestBaseline);
+  });
+
+  it("zero extra gives same interest as baseline (approximately)", () => {
+    const result = simulateMonthlyAvalanche([sampleLoan], 0);
+    expect(result.interestSaved).toBeCloseTo(0, 0);
+  });
+
+  it("extra capacity goes to higher-rate loan first (avalanche)", () => {
+    const result = simulateMonthlyAvalanche([highRateLoan, lowRateLoan], 100);
+    // In month 1, the high-rate loan should receive the extra
+    const month1 = result.timeline[0];
+    expect(month1.extraAllocated["high"]).toBeGreaterThan(0);
+    expect(month1.extraAllocated["low"]).toBe(0);
+  });
+
+  it("pays off high-rate loan before low-rate loan", () => {
+    const result = simulateMonthlyAvalanche([highRateLoan, lowRateLoan], 200);
+    const highPayoff = result.payoffOrder.find((p) => p.loanId === "high");
+    const lowPayoff = result.payoffOrder.find((p) => p.loanId === "low");
+    expect(highPayoff).toBeDefined();
+    expect(lowPayoff).toBeDefined();
+    expect(highPayoff!.month).toBeLessThan(lowPayoff!.month);
+  });
+
+  it("monthsSaved is non-negative", () => {
+    const result = simulateMonthlyAvalanche([sampleLoan], 100);
+    expect(result.monthsSaved).toBeGreaterThanOrEqual(0);
+  });
+
+  it("all loans appear in payoffOrder", () => {
+    const result = simulateMonthlyAvalanche([highRateLoan, lowRateLoan], 100);
+    expect(result.payoffOrder).toHaveLength(2);
   });
 });
