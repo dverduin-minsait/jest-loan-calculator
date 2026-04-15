@@ -6,6 +6,7 @@ import { DebtChart } from "@/components/dashboard/DebtChart";
 import { AmortizationCalculator } from "@/components/dashboard/AmortizationCalculator";
 import { OptimalAmortizationAdvisor } from "@/components/dashboard/OptimalAmortizationAdvisor";
 import { LoanList } from "@/components/loans/LoanList";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -58,17 +59,23 @@ export default async function DashboardPage() {
             <h2 className="text-lg font-medium text-gray-900 mb-4">
               Debt Overview
             </h2>
-            <DebtChart loans={loanData} />
+            <ErrorBoundary>
+              <DebtChart loans={loanData} />
+            </ErrorBoundary>
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <h2 className="text-lg font-medium text-gray-900 mb-4">
               Amortization Calculator
             </h2>
-            <AmortizationCalculator loans={loanData} />
+            <ErrorBoundary>
+              <AmortizationCalculator loans={loanData} />
+            </ErrorBoundary>
           </div>
 
-          <OptimalAmortizationAdvisor loans={loanData} />
+          <ErrorBoundary>
+            <OptimalAmortizationAdvisor loans={loanData} />
+          </ErrorBoundary>
         </>
       ) : (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
