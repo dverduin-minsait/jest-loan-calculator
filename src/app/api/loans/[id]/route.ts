@@ -80,5 +80,5 @@ export async function DELETE(
   }
 
   await prisma.loan.delete({ where: { id } });
-  return NextResponse.json({ message: "Loan deleted" });
+  return new NextResponse(null, { status: 204 });
 }

@@ -224,7 +224,7 @@ describe("DELETE /api/loans/[id]", () => {
     const res = await deleteLoan(req, {
       params: Promise.resolve({ id: "loan-1" }),
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(204);
     expect(mockDelete).toHaveBeenCalledWith({ where: { id: "loan-1" } });
   });
 });

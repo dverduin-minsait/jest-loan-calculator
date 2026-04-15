@@ -10,8 +10,12 @@ export async function POST(req: NextRequest) {
     const { email, name, password } = body;
 
     if (!email || !name || !password) {
+      const missingFields = [];
+      if (!email) missingFields.push("email");
+      if (!name) missingFields.push("name");
+      if (!password) missingFields.push("password");
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: `Missing required fields: ${missingFields.join(", ")}` },
         { status: 400 }
       );
     }
@@ -45,7 +49,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(user, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

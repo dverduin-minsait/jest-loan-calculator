@@ -177,7 +177,7 @@ describe("DELETE /api/users/[id]", () => {
     const res = await deleteUser(req, {
       params: Promise.resolve({ id: "user-1" }),
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(204);
     expect(mockDelete).toHaveBeenCalledWith({ where: { id: "user-1" } });
   });
 });
