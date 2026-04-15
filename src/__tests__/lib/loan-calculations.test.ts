@@ -157,6 +157,24 @@ describe("generateChartData", () => {
     // The modified schedule should end sooner
     expect(extraData.length).toBeLessThanOrEqual(normalData.length);
   });
+
+  it("produces correct data for a long 360-month loan (O(n) Map path)", () => {
+    const mortgage: LoanData = {
+      id: "mortgage",
+      name: "Home Loan",
+      amount: 200000,
+      interest: 4,
+      months: 360,
+    };
+    const data = generateChartData([mortgage]);
+    expect(data.length).toBe(360);
+    // Balance at month 1 should be less than full principal
+    expect(data[0]["mortgage"]).toBeLessThan(200000);
+    // Balance at last month should be ~0
+    expect(data[359]["mortgage"]).toBeCloseTo(0, 1);
+    // Cumulative paid at end should exceed principal (interest cost)
+    expect(data[359]["mortgage_paid"]).toBeGreaterThan(200000);
+  });
 });
 
 describe("findOptimalAmortization", () => {

@@ -148,14 +148,18 @@ export function generateChartData(
   );
 
   const cumulativePaid: Record<string, number> = {};
-  for (const { id } of schedules) cumulativePaid[id] = 0;
+  // Pre-build Maps for O(1) month lookup (avoids O(n²) Array.find in the loop)
+  const scheduleMaps = schedules.map(({ id, schedule }) => {
+    cumulativePaid[id] = 0;
+    return { id, map: new Map(schedule.map((e) => [e.month, e])) };
+  });
 
   const data: ChartDataPoint[] = [];
 
   for (let m = 1; m <= maxMonth; m++) {
     const point: ChartDataPoint = { month: m, total: 0, totalPaid: 0 };
-    for (const { id, schedule } of schedules) {
-      const entry = schedule.find((e) => e.month === m);
+    for (const { id, map } of scheduleMaps) {
+      const entry = map.get(m);
       const balance = entry?.balance ?? 0;
       cumulativePaid[id] += entry?.payment ?? 0;
       point[id] = balance;
