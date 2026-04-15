@@ -34,6 +34,7 @@ export default async function DashboardPage() {
     amount: l.amount,
     interest: l.interest,
     months: l.months,
+    partialAmortRate: l.partialAmortRate,
   }));
 
   return (

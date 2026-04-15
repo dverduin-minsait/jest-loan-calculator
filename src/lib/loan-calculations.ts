@@ -4,6 +4,8 @@ export interface LoanData {
   amount: number;
   interest: number; // annual rate in %
   months: number; // total term in months
+  /** Annual partial amortization rate in % of outstanding balance (applied every 12 months). */
+  partialAmortRate?: number;
 }
 
 export interface ScheduleEntry {
@@ -74,7 +76,7 @@ function round(value: number, decimals = 2): number {
  * each ScheduleEntry are rounded to 2 decimal places for display consistency.
  */
 export function generateAmortizationSchedule(loan: LoanData): ScheduleEntry[] {
-  const { amount, interest, months } = loan;
+  const { amount, interest, months, partialAmortRate = 0 } = loan;
   const payment = calculateMonthlyPayment(amount, interest, months);
   const r = interest / 100 / 12;
   const schedule: ScheduleEntry[] = [];
@@ -85,15 +87,22 @@ export function generateAmortizationSchedule(loan: LoanData): ScheduleEntry[] {
     const principalPaid = Math.min(payment - interestPaid, balance);
     balance = Math.max(0, balance - principalPaid);
 
+    // Apply partial amortization annually (every 12 months) if rate > 0
+    const partialExtra =
+      partialAmortRate > 0 && m % 12 === 0
+        ? Math.min((partialAmortRate / 100) * balance, balance)
+        : 0;
+    if (partialExtra > 0) balance = round(Math.max(0, balance - partialExtra));
+
     // Snap sub-cent residuals to zero so the last entry reads exactly 0
     if (balance < 0.005) balance = 0;
 
     schedule.push({
       month: m,
       balance: round(balance),
-      payment: round(principalPaid + interestPaid),
+      payment: round(principalPaid + interestPaid + partialExtra),
       interestPaid: round(interestPaid),
-      principalPaid: round(principalPaid),
+      principalPaid: round(principalPaid + partialExtra),
     });
 
     if (balance === 0) break;
@@ -110,7 +119,7 @@ export function applyExtraAmortization(
   loan: LoanData,
   extra: ExtraPayment
 ): ScheduleEntry[] {
-  const { amount, interest, months } = loan;
+  const { amount, interest, months, partialAmortRate = 0 } = loan;
   const r = interest / 100 / 12;
   const originalPayment = calculateMonthlyPayment(amount, interest, months);
   const schedule: ScheduleEntry[] = [];
@@ -124,14 +133,20 @@ export function applyExtraAmortization(
     const extraThisMonth = m === extra.month ? Math.min(extra.amount, balance) : 0;
     balance = Math.max(0, balance - extraThisMonth);
 
+    const partialExtra =
+      partialAmortRate > 0 && m % 12 === 0
+        ? Math.min((partialAmortRate / 100) * balance, balance)
+        : 0;
+    if (partialExtra > 0) balance = Math.max(0, balance - partialExtra);
+
     if (balance < 0.005) balance = 0;
 
     schedule.push({
       month: m,
       balance: round(balance),
-      payment: round(principalPaid + interestPaid + extraThisMonth),
+      payment: round(principalPaid + interestPaid + extraThisMonth + partialExtra),
       interestPaid: round(interestPaid),
-      principalPaid: round(principalPaid + extraThisMonth),
+      principalPaid: round(principalPaid + extraThisMonth + partialExtra),
     });
 
     if (balance === 0) break;

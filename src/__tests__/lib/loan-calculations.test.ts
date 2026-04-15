@@ -83,6 +83,34 @@ describe("generateAmortizationSchedule", () => {
     expect(schedule[0].payment).toBeCloseTo(1000, 2);
     expect(schedule[11].balance).toBeCloseTo(0, 2);
   });
+
+  describe("partialAmortRate", () => {
+    it("loan with partialAmortRate finishes before one without", () => {
+      const base: LoanData = { id: "b", name: "B", amount: 20000, interest: 5, months: 60 };
+      const withPartial: LoanData = { ...base, id: "p", partialAmortRate: 10 };
+      const normalSchedule = generateAmortizationSchedule(base);
+      const partialSchedule = generateAmortizationSchedule(withPartial);
+      expect(partialSchedule.length).toBeLessThan(normalSchedule.length);
+    });
+
+    it("partial amortization reduces balance at month 12", () => {
+      const base: LoanData = { id: "b", name: "B", amount: 20000, interest: 5, months: 60 };
+      const withPartial: LoanData = { ...base, id: "p", partialAmortRate: 10 };
+      const normalSchedule = generateAmortizationSchedule(base);
+      const partialSchedule = generateAmortizationSchedule(withPartial);
+      const normalBalance12 = normalSchedule.find((e) => e.month === 12)!.balance;
+      const partialBalance12 = partialSchedule.find((e) => e.month === 12)!.balance;
+      expect(partialBalance12).toBeLessThan(normalBalance12);
+    });
+
+    it("zero partialAmortRate behaves identically to no rate", () => {
+      const a: LoanData = { id: "a", name: "A", amount: 10000, interest: 5, months: 24 };
+      const b: LoanData = { ...a, id: "b", partialAmortRate: 0 };
+      const schedA = generateAmortizationSchedule(a);
+      const schedB = generateAmortizationSchedule(b);
+      expect(schedA).toEqual(schedB);
+    });
+  });
 });
 
 describe("applyExtraAmortization", () => {
