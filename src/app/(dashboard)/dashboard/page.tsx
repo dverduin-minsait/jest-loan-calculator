@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   const [user, loans] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { id: true, name: true, savings: true, income: true },
+      select: { id: true, name: true, savings: true, income: true, inflationRate: true },
     }),
     prisma.loan.findMany({
       where: { userId: session.user.id },
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
     amount: l.amount,
     interest: l.interest,
     months: l.months,
-    inflationRate: l.inflationRate,
+    inflationRate: user.inflationRate,
     partialAmortRate: l.partialAmortRate,
   }));
 
@@ -55,6 +55,7 @@ export default async function DashboardPage() {
         userId={user.id}
         initialSavings={user.savings}
         initialIncome={user.income}
+        initialInflationRate={user.inflationRate}
       />
 
       {loanData.length > 0 ? (

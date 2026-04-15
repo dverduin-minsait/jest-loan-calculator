@@ -8,7 +8,7 @@ jest.mock("next/navigation", () => ({
 
 global.fetch = jest.fn();
 
-const DEFAULT_PROPS = { userId: "user-1", initialSavings: 1000, initialIncome: 2000 };
+const DEFAULT_PROPS = { userId: "user-1", initialSavings: 1000, initialIncome: 2000, initialInflationRate: 0 };
 
 describe("SavingsIncomePanel", () => {
   beforeEach(() => jest.clearAllMocks());

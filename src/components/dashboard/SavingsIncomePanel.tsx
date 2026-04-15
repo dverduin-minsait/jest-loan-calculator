@@ -7,16 +7,19 @@ interface SavingsIncomePanelProps {
   userId: string;
   initialSavings: number;
   initialIncome: number;
+  initialInflationRate: number;
 }
 
 export function SavingsIncomePanel({
   userId,
   initialSavings,
   initialIncome,
+  initialInflationRate,
 }: SavingsIncomePanelProps) {
   const router = useRouter();
   const [savings, setSavings] = useState(initialSavings.toString());
   const [income, setIncome] = useState(initialIncome.toString());
+  const [inflationRate, setInflationRate] = useState(initialInflationRate.toString());
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -33,6 +36,7 @@ export function SavingsIncomePanel({
       body: JSON.stringify({
         savings: Number(savings),
         income: Number(income),
+        inflationRate: Number(inflationRate),
       }),
     });
 
@@ -88,6 +92,26 @@ export function SavingsIncomePanel({
             value={income}
             onChange={(e) => setIncome(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-40"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="inflation-rate"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Expected inflation (%/yr)
+          </label>
+          <input
+            id="inflation-rate"
+            type="number"
+            min="0"
+            max="100"
+            step="0.1"
+            value={inflationRate}
+            onChange={(e) => setInflationRate(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+            placeholder="0"
           />
         </div>
 

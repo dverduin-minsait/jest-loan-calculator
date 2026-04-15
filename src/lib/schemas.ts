@@ -5,7 +5,6 @@ export const LoanCreateSchema = z.object({
   amount: z.number().min(0),
   interest: z.number().min(0),
   months: z.number().int().min(1),
-  inflationRate: z.number().min(0).max(100).optional().default(0),
   partialAmortRate: z.number().min(0).optional().default(0),
   totalAmortRate: z.number().min(0).optional().default(0),
 });

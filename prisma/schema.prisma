@@ -17,6 +17,7 @@ model User {
   password  String
   savings   Float    @default(0)
   income    Float    @default(0)
+  inflationRate Float  @default(0)
   loans     Loan[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -27,7 +28,6 @@ model Loan {
   name             String
   amount           Float
   interest         Float
-  inflationRate    Float    @default(0)
   partialAmortRate Float    @default(0)
   totalAmortRate   Float    @default(0)
   months           Int
