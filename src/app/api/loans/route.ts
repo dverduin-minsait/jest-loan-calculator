@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { LoanCreateSchema } from "@/lib/schemas";
+import { listLoans, createLoan } from "@/lib/services/loans";
 
 export async function GET() {
   const session = await auth();
@@ -9,11 +9,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const loans = await prisma.loan.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-  });
-
+  const loans = await listLoans(session.user.id);
   return NextResponse.json(loans);
 }
 
@@ -31,19 +27,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-  const { name, amount, interest, partialAmortRate, totalAmortRate, months } = parsed.data;
 
-  const loan = await prisma.loan.create({
-    data: {
-      name,
-      amount,
-      interest,
-      partialAmortRate,
-      totalAmortRate,
-      months,
-      userId: session.user.id,
-    },
-  });
-
+  const loan = await createLoan({ ...parsed.data, userId: session.user.id });
   return NextResponse.json(loan, { status: 201 });
 }

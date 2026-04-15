@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
 import { UserCreateSchema } from "@/lib/schemas";
+import { createUser } from "@/lib/services/users";
+import { ServiceError } from "@/lib/services/service-error";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,28 +13,14 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const { email, name, password } = parsed.data;
 
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return NextResponse.json(
-        { error: "Email already registered" },
-        { status: 409 }
-      );
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const user = await prisma.user.create({
-      data: { email, name, password: hashedPassword },
-      select: { id: true, email: true, name: true, savings: true, income: true },
-    });
-
+    const user = await createUser(parsed.data);
     return NextResponse.json(user, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+  } catch (e) {
+    if (e instanceof ServiceError && e.code === "CONFLICT") {
+      return NextResponse.json({ error: e.message }, { status: 409 });
+    }
+    console.error(e);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

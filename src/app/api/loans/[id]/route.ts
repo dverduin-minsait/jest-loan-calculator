@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { LoanUpdateSchema } from "@/lib/schemas";
+import { getLoan, updateLoan, deleteLoan } from "@/lib/services/loans";
+import { ServiceError } from "@/lib/services/service-error";
+
+function serviceErrorResponse(e: unknown) {
+  if (e instanceof ServiceError) {
+    const status = e.code === "NOT_FOUND" ? 404 : 403;
+    return NextResponse.json({ error: e.message }, { status });
+  }
+  throw e;
+}
 
 export async function GET(
   _req: NextRequest,
@@ -13,14 +22,12 @@ export async function GET(
   }
 
   const { id } = await params;
-  const loan = await prisma.loan.findUnique({ where: { id } });
-
-  if (!loan) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (loan.userId !== session.user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  try {
+    const loan = await getLoan(id, session.user.id);
+    return NextResponse.json(loan);
+  } catch (e) {
+    return serviceErrorResponse(e);
   }
-
-  return NextResponse.json(loan);
 }
 
 export async function PUT(
@@ -33,13 +40,6 @@ export async function PUT(
   }
 
   const { id } = await params;
-  const loan = await prisma.loan.findUnique({ where: { id } });
-
-  if (!loan) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (loan.userId !== session.user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
   const body = await req.json();
   const parsed = LoanUpdateSchema.safeParse(body);
   if (!parsed.success) {
@@ -49,12 +49,12 @@ export async function PUT(
     );
   }
 
-  const updated = await prisma.loan.update({
-    where: { id },
-    data: parsed.data,
-  });
-
-  return NextResponse.json(updated);
+  try {
+    const updated = await updateLoan(id, session.user.id, parsed.data);
+    return NextResponse.json(updated);
+  } catch (e) {
+    return serviceErrorResponse(e);
+  }
 }
 
 export async function DELETE(
@@ -67,13 +67,10 @@ export async function DELETE(
   }
 
   const { id } = await params;
-  const loan = await prisma.loan.findUnique({ where: { id } });
-
-  if (!loan) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (loan.userId !== session.user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  try {
+    await deleteLoan(id, session.user.id);
+    return new NextResponse(null, { status: 204 });
+  } catch (e) {
+    return serviceErrorResponse(e);
   }
-
-  await prisma.loan.delete({ where: { id } });
-  return new NextResponse(null, { status: 204 });
 }
