@@ -27,6 +27,7 @@ model Loan {
   name             String
   amount           Float
   interest         Float
+  inflationRate    Float    @default(0)
   partialAmortRate Float    @default(0)
   totalAmortRate   Float    @default(0)
   months           Int

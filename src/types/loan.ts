@@ -7,6 +7,7 @@ export interface Loan {
   name: string;
   amount: number;
   interest: number;
+  inflationRate: number;
   partialAmortRate: number;
   totalAmortRate: number;
   months: number;

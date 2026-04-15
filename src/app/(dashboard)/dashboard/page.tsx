@@ -35,6 +35,7 @@ export default async function DashboardPage() {
     amount: l.amount,
     interest: l.interest,
     months: l.months,
+    inflationRate: l.inflationRate,
     partialAmortRate: l.partialAmortRate,
   }));
 

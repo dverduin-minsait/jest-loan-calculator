@@ -14,6 +14,7 @@ export function LoanForm({ loan }: LoanFormProps) {
     name: loan?.name ?? "",
     amount: loan?.amount?.toString() ?? "",
     interest: loan?.interest?.toString() ?? "",
+    inflationRate: loan?.inflationRate?.toString() ?? "0",
     partialAmortRate: loan?.partialAmortRate?.toString() ?? "0",
     totalAmortRate: loan?.totalAmortRate?.toString() ?? "0",
     months: loan?.months?.toString() ?? "",
@@ -52,6 +53,7 @@ export function LoanForm({ loan }: LoanFormProps) {
       name: fields.name,
       amount,
       interest,
+      inflationRate: Number(fields.inflationRate),
       partialAmortRate: Number(fields.partialAmortRate),
       totalAmortRate: Number(fields.totalAmortRate),
       months,
@@ -160,6 +162,27 @@ export function LoanForm({ loan }: LoanFormProps) {
           className={inputClass}
           placeholder="4.5"
         />
+      </div>
+
+      <div>
+        <label htmlFor="inflationRate" className={labelClass}>
+          Expected inflation rate (%)
+        </label>
+        <input
+          id="inflationRate"
+          name="inflationRate"
+          type="number"
+          min="0"
+          max="100"
+          step="0.1"
+          value={fields.inflationRate}
+          onChange={handleChange}
+          className={inputClass}
+          placeholder="0"
+        />
+        <p className="mt-1 text-xs text-gray-400">
+          Used to show the real (inflation-adjusted) cost of this loan.
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

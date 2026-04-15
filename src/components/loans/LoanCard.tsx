@@ -71,6 +71,11 @@ export function LoanCard({ loan }: LoanCardProps) {
               Total amort: <strong>{loan.totalAmortRate}%</strong>
             </span>
           )}
+          {loan.inflationRate > 0 && (
+            <span>
+              Inflation: <strong>{loan.inflationRate}%/yr</strong>
+            </span>
+          )}
         </div>
       </div>
 

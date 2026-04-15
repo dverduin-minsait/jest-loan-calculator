@@ -20,18 +20,22 @@ function fmt(n: number) {
 export function LoanSummaryCard({ loans }: LoanSummaryCardProps) {
   if (loans.length === 0) return null;
 
+  const hasInflation = loans.some((l) => (l.inflationRate ?? 0) > 0);
+
   const totals = loans.reduce(
     (acc, loan) => {
       const schedule = generateAmortizationSchedule(loan);
       const totalPaid = schedule.reduce((s, e) => s + e.payment, 0);
+      const totalRealPaid = schedule.reduce((s, e) => s + e.realPayment, 0);
       const totalInterest = schedule.reduce((s, e) => s + e.interestPaid, 0);
       return {
         principal: acc.principal + loan.amount,
         totalPaid: acc.totalPaid + totalPaid,
+        totalRealPaid: acc.totalRealPaid + totalRealPaid,
         totalInterest: acc.totalInterest + totalInterest,
       };
     },
-    { principal: 0, totalPaid: 0, totalInterest: 0 }
+    { principal: 0, totalPaid: 0, totalRealPaid: 0, totalInterest: 0 }
   );
 
   const interestRatio =
@@ -61,6 +65,23 @@ export function LoanSummaryCard({ loans }: LoanSummaryCardProps) {
           </p>
         </div>
       </div>
+      {hasInflation && (
+        <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">
+              Real total paid <span className="normal-case text-gray-400">(today&apos;s money)</span>
+            </p>
+            <p className="text-xl font-semibold text-gray-900">{fmt(totals.totalRealPaid)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">Inflation benefit</p>
+            <p className="text-xl font-semibold text-green-600">
+              {fmt(totals.totalPaid - totals.totalRealPaid)}
+              <span className="text-sm text-green-400 ml-1">less in real terms</span>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

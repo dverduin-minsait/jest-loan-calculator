@@ -119,6 +119,20 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
           strokeDasharray="6 3"
           dot={false}
         />
+        {/* Real total balance (inflation-adjusted) — only shown when at least one loan
+            has an inflation rate > 0. Shows how the real burden of the debt erodes
+            faster than the nominal balance due to inflation. */}
+        {data.some((d) => "totalReal" in d) && (
+          <Line
+            type="monotone"
+            dataKey="totalReal"
+            name="Total real debt (inflation-adjusted)"
+            stroke="#a78bfa"
+            strokeWidth={1.5}
+            strokeDasharray="3 2"
+            dot={false}
+          />
+        )}
       </LineChart>
     </ResponsiveContainer>
   );

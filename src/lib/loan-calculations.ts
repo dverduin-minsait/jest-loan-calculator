@@ -6,6 +6,8 @@ export interface LoanData {
   months: number; // total term in months
   /** Annual partial amortization rate in % of outstanding balance (applied every 12 months). */
   partialAmortRate?: number;
+  /** Expected annual inflation rate in % (default 0). Used to compute real (inflation-adjusted) payment values. */
+  inflationRate?: number;
 }
 
 export interface ScheduleEntry {
@@ -14,6 +16,8 @@ export interface ScheduleEntry {
   payment: number;
   interestPaid: number;
   principalPaid: number;
+  /** Nominal payment in today's purchasing power (payment ÷ cumulative inflation factor). Equals payment when inflationRate is 0. */
+  realPayment: number;
 }
 
 export interface ExtraPayment {
@@ -94,9 +98,10 @@ function round(value: number, decimals = 2): number {
  * each ScheduleEntry are rounded to 2 decimal places for display consistency.
  */
 export function generateAmortizationSchedule(loan: LoanData): ScheduleEntry[] {
-  const { amount, interest, months, partialAmortRate = 0 } = loan;
+  const { amount, interest, months, partialAmortRate = 0, inflationRate = 0 } = loan;
   const payment = calculateMonthlyPayment(amount, interest, months);
   const r = interest / 100 / 12;
+  const monthlyInflation = inflationRate / 100 / 12;
   const schedule: ScheduleEntry[] = [];
   let balance = amount; // exact accumulator — do NOT round this
 
@@ -115,12 +120,16 @@ export function generateAmortizationSchedule(loan: LoanData): ScheduleEntry[] {
     // Snap sub-cent residuals to zero so the last entry reads exactly 0
     if (balance < 0.005) balance = 0;
 
+    const nominalPayment = round(principalPaid + interestPaid + partialExtra);
     schedule.push({
       month: m,
       balance: round(balance),
-      payment: round(principalPaid + interestPaid + partialExtra),
+      payment: nominalPayment,
       interestPaid: round(interestPaid),
       principalPaid: round(principalPaid + partialExtra),
+      realPayment: monthlyInflation > 0
+        ? round(nominalPayment / Math.pow(1 + monthlyInflation, m))
+        : nominalPayment,
     });
 
     if (balance === 0) break;
@@ -137,8 +146,9 @@ export function applyExtraAmortization(
   loan: LoanData,
   extra: ExtraPayment
 ): ScheduleEntry[] {
-  const { amount, interest, months, partialAmortRate = 0 } = loan;
+  const { amount, interest, months, partialAmortRate = 0, inflationRate = 0 } = loan;
   const r = interest / 100 / 12;
+  const monthlyInflation = inflationRate / 100 / 12;
   const originalPayment = calculateMonthlyPayment(amount, interest, months);
   const schedule: ScheduleEntry[] = [];
   let balance = amount; // exact accumulator
@@ -159,12 +169,16 @@ export function applyExtraAmortization(
 
     if (balance < 0.005) balance = 0;
 
+    const nominalPayment = round(principalPaid + interestPaid + extraThisMonth + partialExtra);
     schedule.push({
       month: m,
       balance: round(balance),
-      payment: round(principalPaid + interestPaid + extraThisMonth + partialExtra),
+      payment: nominalPayment,
       interestPaid: round(interestPaid),
       principalPaid: round(principalPaid + extraThisMonth + partialExtra),
+      realPayment: monthlyInflation > 0
+        ? round(nominalPayment / Math.pow(1 + monthlyInflation, m))
+        : nominalPayment,
     });
 
     if (balance === 0) break;
@@ -184,6 +198,7 @@ export function generateChartData(
 ): ChartDataPoint[] {
   const schedules = loans.map((loan) => ({
     id: loan.id,
+    inflationRate: loan.inflationRate ?? 0,
     schedule: extras?.[loan.id]
       ? applyExtraAmortization(loan, extras[loan.id])
       : generateAmortizationSchedule(loan),
@@ -196,17 +211,19 @@ export function generateChartData(
   );
 
   const cumulativePaid: Record<string, number> = {};
+  const hasInflation = schedules.some(({ inflationRate }) => inflationRate > 0);
   // Pre-build Maps for O(1) month lookup (avoids O(n²) Array.find in the loop)
-  const scheduleMaps = schedules.map(({ id, schedule }) => {
+  const scheduleMaps = schedules.map(({ id, inflationRate, schedule }) => {
     cumulativePaid[id] = 0;
-    return { id, map: new Map(schedule.map((e) => [e.month, e])) };
+    return { id, inflationRate, map: new Map(schedule.map((e) => [e.month, e])) };
   });
 
   const data: ChartDataPoint[] = [];
 
   for (let m = 1; m <= maxMonth; m++) {
     const point: ChartDataPoint = { month: m, total: 0, totalPaid: 0 };
-    for (const { id, map } of scheduleMaps) {
+    let totalReal = 0;
+    for (const { id, inflationRate, map } of scheduleMaps) {
       const entry = map.get(m);
       const balance = entry?.balance ?? 0;
       cumulativePaid[id] += entry?.payment ?? 0;
@@ -214,7 +231,14 @@ export function generateChartData(
       point[`${id}_paid`] = cumulativePaid[id];
       point.total += balance;
       point.totalPaid += cumulativePaid[id];
+      if (hasInflation) {
+        const monthlyInflation = inflationRate / 100 / 12;
+        totalReal += inflationRate > 0
+          ? balance / Math.pow(1 + monthlyInflation, m)
+          : balance;
+      }
     }
+    if (hasInflation) point.totalReal = round(totalReal);
     data.push(point);
   }
 
