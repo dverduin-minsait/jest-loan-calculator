@@ -65,6 +65,11 @@ describe("generateAmortizationSchedule", () => {
     expect(lastEntry.balance).toBeCloseTo(0, 2);
   });
 
+  it("final balance is exactly 0 after rounding (no floating-point drift)", () => {
+    const schedule = generateAmortizationSchedule(sampleLoan);
+    expect(schedule[schedule.length - 1].balance).toBe(0);
+  });
+
   it("balance strictly decreases over time", () => {
     const schedule = generateAmortizationSchedule(sampleLoan);
     for (let i = 1; i < schedule.length; i++) {

@@ -60,27 +60,38 @@ export function calculateMonthlyPayment(
   return (principal * (r * factor)) / (factor - 1);
 }
 
+/** Round to a given number of decimal places to prevent floating-point drift in displayed values. */
+function round(value: number, decimals = 2): number {
+  const factor = Math.pow(10, decimals);
+  return Math.round(value * factor) / factor;
+}
+
 /**
  * Generates a full French amortization schedule for a loan.
+ * The internal balance accumulator uses exact arithmetic; values stored in
+ * each ScheduleEntry are rounded to 2 decimal places for display consistency.
  */
 export function generateAmortizationSchedule(loan: LoanData): ScheduleEntry[] {
   const { amount, interest, months } = loan;
   const payment = calculateMonthlyPayment(amount, interest, months);
   const r = interest / 100 / 12;
   const schedule: ScheduleEntry[] = [];
-  let balance = amount;
+  let balance = amount; // exact accumulator — do NOT round this
 
   for (let m = 1; m <= months; m++) {
     const interestPaid = balance * r;
     const principalPaid = Math.min(payment - interestPaid, balance);
     balance = Math.max(0, balance - principalPaid);
 
+    // Snap sub-cent residuals to zero so the last entry reads exactly 0
+    if (balance < 0.005) balance = 0;
+
     schedule.push({
       month: m,
-      balance,
-      payment: m === months ? payment - Math.max(0, balance) : payment,
-      interestPaid,
-      principalPaid,
+      balance: round(balance),
+      payment: round(principalPaid + interestPaid),
+      interestPaid: round(interestPaid),
+      principalPaid: round(principalPaid),
     });
 
     if (balance === 0) break;
@@ -101,7 +112,7 @@ export function applyExtraAmortization(
   const r = interest / 100 / 12;
   const originalPayment = calculateMonthlyPayment(amount, interest, months);
   const schedule: ScheduleEntry[] = [];
-  let balance = amount;
+  let balance = amount; // exact accumulator
 
   for (let m = 1; m <= months; m++) {
     const interestPaid = balance * r;
@@ -111,12 +122,14 @@ export function applyExtraAmortization(
     const extraThisMonth = m === extra.month ? Math.min(extra.amount, balance) : 0;
     balance = Math.max(0, balance - extraThisMonth);
 
+    if (balance < 0.005) balance = 0;
+
     schedule.push({
       month: m,
-      balance,
-      payment: originalPayment + extraThisMonth,
-      interestPaid,
-      principalPaid: principalPaid + extraThisMonth,
+      balance: round(balance),
+      payment: round(principalPaid + interestPaid + extraThisMonth),
+      interestPaid: round(interestPaid),
+      principalPaid: round(principalPaid + extraThisMonth),
     });
 
     if (balance === 0) break;
