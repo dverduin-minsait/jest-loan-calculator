@@ -37,15 +37,33 @@ export function LoanForm({ loan }: LoanFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    const amount = Number(fields.amount);
+    const interest = Number(fields.interest);
+    const months = Number(fields.months);
+
+    if (isNaN(amount) || amount < 0) {
+      setError("Principal must be a non-negative number.");
+      return;
+    }
+    if (isNaN(interest) || interest < 0) {
+      setError("Interest rate must be a non-negative number.");
+      return;
+    }
+    if (!Number.isInteger(months) || months < 1) {
+      setError("Term must be a positive whole number of months.");
+      return;
+    }
+
     setLoading(true);
 
     const payload = {
       name: fields.name,
-      amount: Number(fields.amount),
-      interest: Number(fields.interest),
+      amount,
+      interest,
       partialAmortRate: Number(fields.partialAmortRate),
       totalAmortRate: Number(fields.totalAmortRate),
-      months: Number(fields.months),
+      months,
     };
 
     const url = loan ? `/api/loans/${loan.id}` : "/api/loans";
@@ -109,7 +127,6 @@ export function LoanForm({ loan }: LoanFormProps) {
             id="amount"
             name="amount"
             type="number"
-            min="0"
             step="0.01"
             value={fields.amount}
             onChange={handleChange}
@@ -127,7 +144,6 @@ export function LoanForm({ loan }: LoanFormProps) {
             id="months"
             name="months"
             type="number"
-            min="1"
             step="1"
             value={fields.months}
             onChange={handleChange}
@@ -146,10 +162,9 @@ export function LoanForm({ loan }: LoanFormProps) {
           id="interest"
           name="interest"
           type="number"
-          min="0"
           step="0.01"
-          value={fields.interest}
-          onChange={handleChange}
+            value={fields.interest}
+            onChange={handleChange}
           required
           className={inputClass}
           placeholder="4.5"

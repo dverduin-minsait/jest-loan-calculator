@@ -100,6 +100,51 @@ describe("LoanForm (create mode)", () => {
       );
     });
   });
+
+  it("shows validation error when amount is negative without calling fetch", async () => {
+    render(<LoanForm />);
+    fireEvent.change(screen.getByLabelText(/loan name/i), { target: { value: "Bad Loan" } });
+    fireEvent.change(screen.getByLabelText(/principal/i), { target: { value: "-500" } });
+    fireEvent.change(screen.getByLabelText(/annual interest rate/i), { target: { value: "5" } });
+    fireEvent.change(screen.getByLabelText(/term/i), { target: { value: "12" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /create loan/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+    });
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("shows validation error when interest is negative without calling fetch", async () => {
+    render(<LoanForm />);
+    fireEvent.change(screen.getByLabelText(/loan name/i), { target: { value: "Bad Loan" } });
+    fireEvent.change(screen.getByLabelText(/principal/i), { target: { value: "5000" } });
+    fireEvent.change(screen.getByLabelText(/annual interest rate/i), { target: { value: "-1" } });
+    fireEvent.change(screen.getByLabelText(/term/i), { target: { value: "12" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /create loan/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+    });
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("shows validation error when months is zero without calling fetch", async () => {
+    render(<LoanForm />);
+    fireEvent.change(screen.getByLabelText(/loan name/i), { target: { value: "Bad Loan" } });
+    fireEvent.change(screen.getByLabelText(/principal/i), { target: { value: "5000" } });
+    fireEvent.change(screen.getByLabelText(/annual interest rate/i), { target: { value: "5" } });
+    fireEvent.change(screen.getByLabelText(/term/i), { target: { value: "0" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /create loan/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+    });
+    expect(fetch).not.toHaveBeenCalled();
+  });
 });
 
 describe("LoanForm (edit mode)", () => {
