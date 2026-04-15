@@ -3,6 +3,7 @@ import {
   generateAmortizationSchedule,
   applyExtraAmortization,
   generateChartData,
+  findOptimalAmortization,
   type LoanData,
 } from "@/lib/loan-calculations";
 
@@ -155,5 +156,76 @@ describe("generateChartData", () => {
 
     // The modified schedule should end sooner
     expect(extraData.length).toBeLessThanOrEqual(normalData.length);
+  });
+});
+
+describe("findOptimalAmortization", () => {
+  const highRateLoan: LoanData = {
+    id: "high",
+    name: "High Rate",
+    amount: 10000,
+    interest: 12,
+    months: 24,
+  };
+  const lowRateLoan: LoanData = {
+    id: "low",
+    name: "Low Rate",
+    amount: 10000,
+    interest: 3,
+    months: 24,
+  };
+
+  it("throws when loans list is empty", () => {
+    expect(() => findOptimalAmortization([], 1000, 1)).toThrow("No loans provided");
+  });
+
+  it("returns the single loan as best when only one loan is provided", () => {
+    const advice = findOptimalAmortization([sampleLoan], 2000, 3);
+    expect(advice.bestLoanId).toBe("loan-1");
+    expect(advice.ranking).toHaveLength(1);
+  });
+
+  it("picks the highest-rate loan first when balances are equal (avalanche)", () => {
+    const advice = findOptimalAmortization([lowRateLoan, highRateLoan], 2000, 3);
+    expect(advice.bestLoanId).toBe("high");
+    expect(advice.ranking[0].loanId).toBe("high");
+  });
+
+  it("ranking is sorted descending by interestSaved", () => {
+    const advice = findOptimalAmortization([lowRateLoan, highRateLoan], 2000, 3);
+    for (let i = 1; i < advice.ranking.length; i++) {
+      expect(advice.ranking[i].interestSaved).toBeLessThanOrEqual(
+        advice.ranking[i - 1].interestSaved
+      );
+    }
+  });
+
+  it("interestSaved is non-negative for all entries", () => {
+    const advice = findOptimalAmortization([lowRateLoan, highRateLoan], 1000, 6);
+    for (const entry of advice.ranking) {
+      expect(entry.interestSaved).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it("monthsSaved is non-negative for all entries", () => {
+    const advice = findOptimalAmortization([lowRateLoan, highRateLoan], 1000, 6);
+    for (const entry of advice.ranking) {
+      expect(entry.monthsSaved).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it("best loan has more interest saved than any other entry", () => {
+    const loans = [lowRateLoan, highRateLoan, sampleLoan];
+    const advice = findOptimalAmortization(loans, 2000, 3);
+    const bestSaved = advice.ranking[0].interestSaved;
+    for (const entry of advice.ranking.slice(1)) {
+      expect(bestSaved).toBeGreaterThanOrEqual(entry.interestSaved);
+    }
+  });
+
+  it("produces a ranking entry for every loan", () => {
+    const loans = [lowRateLoan, highRateLoan, sampleLoan];
+    const advice = findOptimalAmortization(loans, 2000, 3);
+    expect(advice.ranking).toHaveLength(loans.length);
   });
 });

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { SavingsIncomePanel } from "@/components/dashboard/SavingsIncomePanel";
 import { DebtChart } from "@/components/dashboard/DebtChart";
 import { AmortizationCalculator } from "@/components/dashboard/AmortizationCalculator";
+import { OptimalAmortizationAdvisor } from "@/components/dashboard/OptimalAmortizationAdvisor";
 import { LoanList } from "@/components/loans/LoanList";
 import Link from "next/link";
 
@@ -65,6 +66,8 @@ export default async function DashboardPage() {
             </h2>
             <AmortizationCalculator loans={loanData} />
           </div>
+
+          <OptimalAmortizationAdvisor loans={loanData} />
         </>
       ) : (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">

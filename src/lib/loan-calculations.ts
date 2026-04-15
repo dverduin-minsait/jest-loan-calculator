@@ -25,6 +25,23 @@ export interface ChartDataPoint {
   [key: string]: number;
 }
 
+export interface AmortizationAdvice {
+  /** The loan that will save the most total interest for a given extra payment. */
+  bestLoanId: string;
+  bestLoanName: string;
+  /** Ranking of all loans from most to least beneficial to amortize. */
+  ranking: {
+    loanId: string;
+    loanName: string;
+    currentBalance: number;
+    annualRate: number;
+    totalInterestNormal: number;
+    totalInterestWithExtra: number;
+    interestSaved: number;
+    monthsSaved: number;
+  }[];
+}
+
 /**
  * French amortization: calculates the fixed monthly payment.
  * Formula: P * r * (1+r)^n / ((1+r)^n - 1)
@@ -143,4 +160,69 @@ export function generateChartData(
   }
 
   return data;
+}
+
+/**
+ * Calculates total interest paid over the full life of a schedule.
+ */
+function totalInterest(schedule: ScheduleEntry[]): number {
+  return schedule.reduce((sum, e) => sum + e.interestPaid, 0);
+}
+
+/**
+ * Given a list of loans and an extra lump-sum amount applied at a given month,
+ * ranks each loan by how much total interest is saved when the extra payment
+ * is directed to that loan instead of any other.
+ *
+ * The mathematically optimal choice (avalanche method) is always the loan with
+ * the highest interest rate, but the ranking also accounts for remaining balance
+ * — if a loan has almost no balance left the savings will be marginal even at a
+ * high rate.
+ */
+export function findOptimalAmortization(
+  loans: LoanData[],
+  extraAmount: number,
+  atMonth: number
+): AmortizationAdvice {
+  if (loans.length === 0) {
+    throw new Error("No loans provided");
+  }
+
+  const ranking = loans
+    .map((loan) => {
+      const normalSchedule = generateAmortizationSchedule(loan);
+      const extraSchedule = applyExtraAmortization(loan, {
+        month: atMonth,
+        amount: extraAmount,
+      });
+
+      const normalEnd = normalSchedule[normalSchedule.length - 1]?.month ?? 0;
+      const extraEnd = extraSchedule[extraSchedule.length - 1]?.month ?? 0;
+
+      // Current balance just before the extra payment month
+      const balanceEntry = normalSchedule.find((e) => e.month === atMonth - 1);
+      const currentBalance =
+        atMonth <= 1
+          ? loan.amount
+          : (balanceEntry?.balance ?? normalSchedule[0]?.balance ?? loan.amount);
+
+      return {
+        loanId: loan.id,
+        loanName: loan.name,
+        currentBalance,
+        annualRate: loan.interest,
+        totalInterestNormal: totalInterest(normalSchedule),
+        totalInterestWithExtra: totalInterest(extraSchedule),
+        interestSaved:
+          totalInterest(normalSchedule) - totalInterest(extraSchedule),
+        monthsSaved: normalEnd - extraEnd,
+      };
+    })
+    .sort((a, b) => b.interestSaved - a.interestSaved);
+
+  return {
+    bestLoanId: ranking[0].loanId,
+    bestLoanName: ranking[0].loanName,
+    ranking,
+  };
 }
