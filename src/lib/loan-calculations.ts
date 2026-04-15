@@ -22,6 +22,7 @@ export interface ExtraPayment {
 export interface ChartDataPoint {
   month: number;
   total: number;
+  totalPaid: number;
   [key: string]: number;
 }
 
@@ -146,15 +147,21 @@ export function generateChartData(
     ...schedules.map((s) => s.schedule[s.schedule.length - 1]?.month ?? 0)
   );
 
+  const cumulativePaid: Record<string, number> = {};
+  for (const { id } of schedules) cumulativePaid[id] = 0;
+
   const data: ChartDataPoint[] = [];
 
   for (let m = 1; m <= maxMonth; m++) {
-    const point: ChartDataPoint = { month: m, total: 0 };
+    const point: ChartDataPoint = { month: m, total: 0, totalPaid: 0 };
     for (const { id, schedule } of schedules) {
       const entry = schedule.find((e) => e.month === m);
       const balance = entry?.balance ?? 0;
+      cumulativePaid[id] += entry?.payment ?? 0;
       point[id] = balance;
+      point[`${id}_paid`] = cumulativePaid[id];
       point.total += balance;
+      point.totalPaid += cumulativePaid[id];
     }
     data.push(point);
   }

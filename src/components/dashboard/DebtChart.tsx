@@ -62,25 +62,47 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
         />
         <Legend verticalAlign="top" />
 
-        {/* Individual loan lines */}
-        {loans.map((loan, i) => (
+        {/* Individual loan lines — balance (solid) + cumulative paid (dotted) */}
+        {loans.flatMap((loan, i) => [
           <Line
-            key={loan.id}
+            key={`${loan.id}-balance`}
             type="monotone"
             dataKey={loan.id}
-            name={loan.name}
+            name={`${loan.name} (balance)`}
             stroke={COLORS[i % COLORS.length]}
             strokeWidth={2}
             dot={false}
-          />
-        ))}
+          />,
+          <Line
+            key={`${loan.id}-paid`}
+            type="monotone"
+            dataKey={`${loan.id}_paid`}
+            name={`${loan.name} (paid)`}
+            stroke={COLORS[i % COLORS.length]}
+            strokeWidth={2}
+            strokeDasharray="5 3"
+            strokeOpacity={0.55}
+            dot={false}
+          />,
+        ])}
 
-        {/* Total debt line */}
+        {/* Total debt remaining */}
         <Line
           type="monotone"
           dataKey="total"
-          name="Total debt"
+          name="Total balance"
           stroke="#1f2937"
+          strokeWidth={2.5}
+          strokeDasharray="6 3"
+          dot={false}
+        />
+
+        {/* Total cumulative paid */}
+        <Line
+          type="monotone"
+          dataKey="totalPaid"
+          name="Total paid"
+          stroke="#6b7280"
           strokeWidth={2.5}
           strokeDasharray="6 3"
           dot={false}
