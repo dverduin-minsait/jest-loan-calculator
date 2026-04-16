@@ -26,6 +26,8 @@ export function OptimalAmortizationAdvisor({
 
   if (loans.length === 0) return null;
 
+  const hasInflation = loans.some((l) => (l.inflationRate ?? 0) > 0);
+
   function handleCalculate(e: React.FormEvent) {
     e.preventDefault();
     const amount = Number(extraAmount);
@@ -134,8 +136,13 @@ export function OptimalAmortizationAdvisor({
                 saves you{" "}
                 <strong>
                   {fmt(result.ranking[0].interestSaved)} in interest
-                </strong>{" "}
-                and{" "}
+                </strong>
+                {hasInflation && (
+                  <>
+                    {" "}(<strong>{fmt(result.ranking[0].realInterestSaved)} real</strong>)
+                  </>
+                )}
+                {" "}and{" "}
                 <strong>
                   {result.ranking[0].monthsSaved} month
                   {result.ranking[0].monthsSaved !== 1 ? "s" : ""}
@@ -150,20 +157,25 @@ export function OptimalAmortizationAdvisor({
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left pb-2 text-gray-500 font-medium pr-4">#</th>
-                  <th className="text-left pb-2 text-gray-500 font-medium pr-4">
+                  <th className="text-left pb-2 text-gray-500 font-medium pr-4" scope="col">#</th>
+                  <th className="text-left pb-2 text-gray-500 font-medium pr-4" scope="col">
                     Loan
                   </th>
-                  <th className="text-right pb-2 text-gray-500 font-medium pr-4">
+                  <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
                     Rate
                   </th>
-                  <th className="text-right pb-2 text-gray-500 font-medium pr-4">
+                  <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
                     Balance
                   </th>
-                  <th className="text-right pb-2 text-gray-500 font-medium pr-4">
+                  <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
                     Interest saved
                   </th>
-                  <th className="text-right pb-2 text-gray-500 font-medium">
+                  {hasInflation && (
+                    <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
+                      Real saved
+                    </th>
+                  )}
+                  <th className="text-right pb-2 text-gray-500 font-medium" scope="col">
                     Months saved
                   </th>
                 </tr>
@@ -198,6 +210,19 @@ export function OptimalAmortizationAdvisor({
                         ? `+${fmt(row.interestSaved)}`
                         : fmt(row.interestSaved)}
                     </td>
+                    {hasInflation && (
+                      <td
+                        className={`py-2 pr-4 text-right ${
+                          row.realInterestSaved > 0
+                            ? "text-violet-700 font-semibold"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {row.realInterestSaved > 0
+                          ? `+${fmt(row.realInterestSaved)}`
+                          : fmt(row.realInterestSaved)}
+                      </td>
+                    )}
                     <td
                       className={`py-2 text-right ${
                         row.monthsSaved > 0
@@ -216,7 +241,7 @@ export function OptimalAmortizationAdvisor({
           <p className="text-xs text-gray-400">
             Calculation assumes the extra payment is applied at the start of the
             specified month, with the regular monthly payment continuing as
-            scheduled.
+            scheduled.{hasInflation && " \u201cReal saved\u201d discounts each payment by your expected inflation rate to show savings in today\u2019s purchasing power."}
           </p>
         </div>
       )}

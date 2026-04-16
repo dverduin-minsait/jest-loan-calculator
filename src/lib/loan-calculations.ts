@@ -47,6 +47,8 @@ export interface AmortizationAdvice {
     totalInterestNormal: number;
     totalInterestWithExtra: number;
     interestSaved: number;
+    /** Interest saved in real (inflation-adjusted) terms. Equals interestSaved when inflationRate is 0. */
+    realInterestSaved: number;
     monthsSaved: number;
   }[];
 }
@@ -246,10 +248,20 @@ export function generateChartData(
 }
 
 /**
- * Calculates total interest paid over the full life of a schedule.
+ * Calculates total interest paid over the full life of a schedule (nominal).
  */
 function totalInterest(schedule: ScheduleEntry[]): number {
   return schedule.reduce((sum, e) => sum + e.interestPaid, 0);
+}
+
+/**
+ * Calculates the real (inflation-adjusted) total cost of a schedule.
+ * Each payment is already discounted in realPayment; we sum those instead
+ * of the nominal payment to get total cost in today’s purchasing power,
+ * then subtract total principal repaid to isolate real interest cost.
+ */
+function realInterest(schedule: ScheduleEntry[]): number {
+  return schedule.reduce((sum, e) => sum + e.realPayment - e.principalPaid, 0);
 }
 
 /**
@@ -298,6 +310,8 @@ export function findOptimalAmortization(
         totalInterestWithExtra: totalInterest(extraSchedule),
         interestSaved:
           totalInterest(normalSchedule) - totalInterest(extraSchedule),
+        realInterestSaved:
+          realInterest(normalSchedule) - realInterest(extraSchedule),
         monthsSaved: normalEnd - extraEnd,
       };
     })
