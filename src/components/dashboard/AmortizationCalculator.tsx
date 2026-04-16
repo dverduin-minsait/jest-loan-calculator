@@ -16,7 +16,7 @@ interface AmortizationCalculatorProps {
 function exportCsv(schedule: ReturnType<typeof generateAmortizationSchedule>, loanName: string) {
   const header = "Month,Payment,Principal,Interest,Balance";
   const rows = schedule.map((r) =>
-    `${r.month},${r.payment.toFixed(2)},${r.principal.toFixed(2)},${r.interest.toFixed(2)},${r.balance.toFixed(2)}`
+    `${r.month},${r.payment.toFixed(2)},${r.principalPaid.toFixed(2)},${r.interestPaid.toFixed(2)},${r.balance.toFixed(2)}`
   );
   const csv = [header, ...rows].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });

@@ -88,6 +88,8 @@ describe("createLoan", () => {
       months: 12,
       partialAmortRate: 0,
       totalAmortRate: 0,
+      category: "other",
+      reminderDays: 0,
       userId: "user-1",
     });
     expect(result).toEqual(LOAN);

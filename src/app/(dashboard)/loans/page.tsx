@@ -31,6 +31,11 @@ export default async function LoansPage({
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
+  const serializedLoans = loans.map((l) => ({
+    ...l,
+    startDate: l.startDate ? l.startDate.toISOString() : null,
+  }));
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -55,7 +60,7 @@ export default async function LoansPage({
         </div>
       ) : (
           <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-          <LoanList loans={loans} />
+          <LoanList loans={serializedLoans} />
           <PaginationBar page={page} totalPages={totalPages} />
         </div>
       )}
