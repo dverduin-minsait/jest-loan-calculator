@@ -31,15 +31,7 @@ export function AvalancheSimulator({ loans }: AvalancheSimulatorProps) {
   }
 
   return (
-    <section className="rounded-xl border bg-white p-6 shadow-sm">
-      <h2 className="mb-1 text-lg font-semibold text-gray-800">
-        Monthly Avalanche Simulator
-      </h2>
-      <p className="mb-4 text-sm text-gray-500">
-        How much total interest could you save by putting an extra fixed amount
-        toward your highest-rate debt each month?
-      </p>
-
+    <>
       <form onSubmit={handleSimulate} className="flex items-end gap-3">
         <div className="flex flex-col gap-1">
           <label
@@ -118,6 +110,6 @@ export function AvalancheSimulator({ loans }: AvalancheSimulatorProps) {
           )}
         </div>
       )}
-    </section>
+    </>
   );
 }

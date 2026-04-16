@@ -9,6 +9,7 @@ import { AvalancheSimulator } from "@/components/dashboard/AvalancheSimulator";
 import { LoanList } from "@/components/loans/LoanList";
 import { LoanSummaryCard } from "@/components/dashboard/LoanSummaryCard";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -51,40 +52,50 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      <SavingsIncomePanel
-        userId={user.id}
-        initialSavings={user.savings}
-        initialIncome={user.income}
-        initialInflationRate={user.inflationRate}
-      />
+      <CollapsibleSection title="Financial Overview">
+        <SavingsIncomePanel
+          userId={user.id}
+          initialSavings={user.savings}
+          initialIncome={user.income}
+          initialInflationRate={user.inflationRate}
+        />
+      </CollapsibleSection>
 
       {loanData.length > 0 ? (
         <>
-          <LoanSummaryCard loans={loanData} />
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
-              Debt Overview
-            </h2>
+          <CollapsibleSection title="Loan Cost Summary">
+            <LoanSummaryCard loans={loanData} />
+          </CollapsibleSection>
+
+          <CollapsibleSection title="Debt Overview">
             <ErrorBoundary>
               <DebtChart loans={loanData} />
             </ErrorBoundary>
-          </div>
+          </CollapsibleSection>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
-              Amortization Calculator
-            </h2>
+          <CollapsibleSection title="Amortization Calculator">
             <ErrorBoundary>
               <AmortizationCalculator loans={loanData} />
             </ErrorBoundary>
-          </div>
+          </CollapsibleSection>
 
-          <ErrorBoundary>
-            <OptimalAmortizationAdvisor loans={loanData} />
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <AvalancheSimulator loans={loanData} />
-          </ErrorBoundary>
+          <CollapsibleSection
+            title="Optimal Amortization Advisor"
+            subtitle="Find out which loan benefits most from an extra payment (avalanche method)."
+          >
+            <ErrorBoundary>
+              <OptimalAmortizationAdvisor loans={loanData} />
+            </ErrorBoundary>
+          </CollapsibleSection>
+
+          <CollapsibleSection
+            title="Monthly Avalanche Simulator"
+            subtitle="How much total interest could you save by putting an extra fixed amount toward your highest-rate debt each month?"
+          >
+            <ErrorBoundary>
+              <AvalancheSimulator loans={loanData} />
+            </ErrorBoundary>
+          </CollapsibleSection>
         </>
       ) : (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
@@ -98,15 +109,16 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-gray-900">Your Loans</h2>
+      <CollapsibleSection
+        title="Your Loans"
+        headerExtra={
           <Link href="/loans" className="text-sm text-blue-600 hover:underline">
             View all
           </Link>
-        </div>
+        }
+      >
         <LoanList loans={loans} />
-      </div>
+      </CollapsibleSection>
     </div>
   );
 }

@@ -54,10 +54,7 @@ export function SavingsIncomePanel({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-      <h2 className="text-lg font-medium text-gray-900 mb-4">
-        Financial Overview
-      </h2>
+    <>
       <form onSubmit={handleSave} className="flex flex-wrap gap-4 items-end">
         <div>
           <label
@@ -128,6 +125,6 @@ export function SavingsIncomePanel({
           {error}
         </p>
       )}
-    </div>
+    </>
   );
 }

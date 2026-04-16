@@ -45,19 +45,7 @@ export function OptimalAmortizationAdvisor({
   const maxMonth = Math.max(...loans.map((l) => l.months));
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <h2 className="text-lg font-medium text-gray-900">
-            Optimal Amortization Advisor
-          </h2>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Find out which loan benefits most from an extra payment (avalanche
-            method).
-          </p>
-        </div>
-      </div>
-
+    <>
       <form onSubmit={handleCalculate} className="flex flex-wrap gap-4 items-end mb-6">
         <div>
           <label
@@ -245,6 +233,6 @@ export function OptimalAmortizationAdvisor({
           </p>
         </div>
       )}
-    </div>
+    </>
   );
 }

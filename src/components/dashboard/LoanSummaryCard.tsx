@@ -42,8 +42,7 @@ export function LoanSummaryCard({ loans }: LoanSummaryCardProps) {
     totals.principal > 0 ? (totals.totalInterest / totals.principal) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-      <h2 className="text-lg font-medium text-gray-900 mb-4">Loan Cost Summary</h2>
+    <>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div>
           <p className="text-xs text-gray-500 uppercase tracking-wide">Loans</p>
@@ -82,6 +81,6 @@ export function LoanSummaryCard({ loans }: LoanSummaryCardProps) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
