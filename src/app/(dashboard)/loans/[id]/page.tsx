@@ -17,11 +17,16 @@ export default async function LoanDetailPage({ params }: Props) {
   if (!loan) notFound();
   if (loan.userId !== session.user.id) redirect("/loans");
 
+  const serializedLoan = {
+    ...loan,
+    startDate: loan.startDate ? loan.startDate.toISOString() : null,
+  };
+
   return (
     <div className="max-w-xl mx-auto">
       <h1 className="text-2xl font-semibold text-foreground mb-6">Edit Loan</h1>
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <LoanForm loan={loan} />
+        <LoanForm loan={serializedLoan} />
       </div>
     </div>
   );

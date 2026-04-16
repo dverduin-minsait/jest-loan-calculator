@@ -91,7 +91,7 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
     <>
       <div className="flex flex-wrap gap-4 items-end mb-6">
         <div>
-          className="block text-sm font-medium text-label mb-1">
+          <label className="block text-sm font-medium text-label mb-1">
             Loan to refinance
           </label>
           <select
@@ -109,7 +109,7 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
         </div>
 
         <div>
-          className="block text-sm font-medium text-label mb-1">
+          <label className="block text-sm font-medium text-label mb-1">
             New rate (%)
           </label>
           <input
@@ -125,7 +125,7 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
         </div>
 
         <div>
-          className="block text-sm font-medium text-label mb-1">
+          <label className="block text-sm font-medium text-label mb-1">
             New term (months)
           </label>
           <input
@@ -141,7 +141,7 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
         </div>
 
         <div>
-          className="block text-sm font-medium text-label mb-1">
+          <label className="block text-sm font-medium text-label mb-1">
             New principal
           </label>
           <input
