@@ -315,7 +315,7 @@ export function findOptimalAmortization(
         monthsSaved: normalEnd - extraEnd,
       };
     })
-    .sort((a, b) => b.interestSaved - a.interestSaved);
+    .sort((a, b) => b.realInterestSaved - a.realInterestSaved);
 
   const expiredLoans = loans.filter((l) => atMonth > l.months);
   const warning =
