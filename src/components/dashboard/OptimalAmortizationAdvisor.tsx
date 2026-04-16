@@ -112,14 +112,14 @@ export function OptimalAmortizationAdvisor({
           )}
 
           {/* Winner banner */}
-          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3">
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-lg flex items-start gap-3">
             <span className="text-2xl">🏆</span>
             <div>
-              <p className="font-semibold text-emerald-900 text-base">
+              <p className="font-semibold text-emerald-900 dark:text-emerald-100 text-base">
                 Amortize{" "}
                 <span className="underline">{result.bestLoanName}</span> first
               </p>
-              <p className="text-emerald-700 text-sm mt-0.5">
+              <p className="text-emerald-700 dark:text-emerald-300 text-sm mt-0.5">
                 Applying {fmt(Number(extraAmount))} at month {atMonth} here
                 saves you{" "}
                 <strong>
@@ -173,7 +173,7 @@ export function OptimalAmortizationAdvisor({
                   <tr
                     key={row.loanId}
                     className={`border-b border-divider ${
-                      i === 0 ? "bg-emerald-50 font-medium" : ""
+                      i === 0 ? "bg-emerald-50 dark:bg-emerald-950 font-medium" : ""
                     }`}
                   >
                     <td className="py-2 pr-4 text-muted-foreground">{i + 1}</td>

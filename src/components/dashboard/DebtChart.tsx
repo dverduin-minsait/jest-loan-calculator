@@ -40,6 +40,29 @@ function formatCurrencyShort(value: number) {
   return `€${Math.round(value)}`;
 }
 
+/** Custom tooltip that inherits CSS variable colours for dark mode support */
+function ChartTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; color: string }>;
+  label?: number;
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2 text-xs max-w-[calc(100vw-32px)]">
+      <p className="font-medium text-foreground mb-1">Month {label}</p>
+      {payload.map((entry) => (
+        <p key={entry.name} style={{ color: entry.color }}>
+          {entry.name}: {formatCurrency(entry.value)}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export function DebtChart({ loans, extras }: DebtChartProps) {
   const data = generateChartData(loans, extras);
   const [isMobile, setIsMobile] = useState(
@@ -72,8 +95,8 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
         dashed: true,
       },
     ]),
-    { key: "total", label: isMobile ? "Total" : "Total balance remaining", color: "#1f2937", dashed: true },
-    { key: "totalPaid", label: isMobile ? "Total paid" : "Total paid (all loans, cumulative)", color: "#6b7280", dashed: true },
+    { key: "total", label: isMobile ? "Total" : "Total balance remaining", color: "#94a3b8", dashed: true },
+    { key: "totalPaid", label: isMobile ? "Total paid" : "Total paid (all loans, cumulative)", color: "#64748b", dashed: true },
     ...(hasInflation
       ? [{ key: "totalReal", label: isMobile ? "Real debt" : "Total real debt (inflation-adjusted)", color: "#a78bfa", dashed: true }]
       : []),
@@ -106,7 +129,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
         aria-label="Debt overview chart showing loan balances and cumulative payments over time"
       >
         <LineChart data={data} margin={margins}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
           <XAxis
             dataKey="month"
             ticks={xTicks}
@@ -119,11 +142,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
             tick={{ fontSize: tickFontSize }}
             width={yAxisWidth}
           />
-          <Tooltip
-            formatter={(value) => [typeof value === "number" ? formatCurrency(value) : String(value ?? ""), ""]}
-            labelFormatter={(label) => `Month ${label}`}
-            wrapperStyle={{ fontSize: 12, maxWidth: "calc(100vw - 32px)" }}
-          />
+          <Tooltip content={<ChartTooltip />} />
 
           {loans.flatMap((loan, i) => [
             <Line
@@ -152,7 +171,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
             type="monotone"
             dataKey="total"
             name="Total balance remaining"
-            stroke="#1f2937"
+            stroke="#94a3b8"
             strokeWidth={2.5}
             strokeDasharray="6 3"
             dot={false}
@@ -161,7 +180,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
             type="monotone"
             dataKey="totalPaid"
             name="Total paid (all loans, cumulative)"
-            stroke="#6b7280"
+            stroke="#64748b"
             strokeWidth={2.5}
             strokeDasharray="6 3"
             dot={false}
