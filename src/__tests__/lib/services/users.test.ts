@@ -24,7 +24,6 @@ import {
   updateUser,
   deleteUser,
 } from "@/lib/services/users";
-import { ServiceError } from "@/lib/services/service-error";
 
 const mockFindUnique = prisma.user.findUnique as jest.MockedFunction<typeof prisma.user.findUnique>;
 const mockCreate = prisma.user.create as jest.MockedFunction<typeof prisma.user.create>;

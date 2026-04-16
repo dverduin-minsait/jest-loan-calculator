@@ -34,7 +34,6 @@ import { NextRequest } from "next/server";
 import { POST as register } from "@/app/api/users/route";
 import {
   GET as getUser,
-  PUT as updateUser,
   DELETE as deleteUser,
 } from "@/app/api/users/[id]/route";
 import { prisma } from "@/lib/prisma";

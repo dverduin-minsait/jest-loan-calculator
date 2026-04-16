@@ -8,6 +8,7 @@ export function OfflineBanner() {
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional post-hydration sync to avoid SSR mismatch
     setIsOnline(navigator.onLine);
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);

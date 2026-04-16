@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // One-off debug/utility scripts in the project root:
+    "check-db.js",
   ]),
 ]);
 

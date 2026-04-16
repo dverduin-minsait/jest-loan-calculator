@@ -28,6 +28,7 @@ export function CollapsibleSection({
   // Sync from localStorage after hydration to avoid server/client mismatch.
   useEffect(() => {
     const stored = localStorage.getItem(key);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional post-hydration sync with localStorage
     if (stored !== null) setIsOpen(stored === "true");
   }, [key]);
 
