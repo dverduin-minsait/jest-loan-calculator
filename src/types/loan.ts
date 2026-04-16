@@ -10,6 +10,9 @@ export interface Loan {
   partialAmortRate: number;
   totalAmortRate: number;
   months: number;
+  startDate?: string | null;
+  category?: string;
+  reminderDays?: number;
 }
 
 /**

@@ -7,6 +7,9 @@ export const LoanCreateSchema = z.object({
   months: z.number().int().min(1),
   partialAmortRate: z.number().min(0).optional().default(0),
   totalAmortRate: z.number().min(0).optional().default(0),
+  startDate: z.string().datetime({ offset: true }).optional().nullable(),
+  category: z.string().optional().default("other"),
+  reminderDays: z.number().int().min(0).optional().default(0),
 });
 
 export const LoanUpdateSchema = LoanCreateSchema.partial();

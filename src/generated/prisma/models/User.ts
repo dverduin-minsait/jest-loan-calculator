@@ -46,6 +46,7 @@ export type UserMinAggregateOutputType = {
   savings: number | null
   income: number | null
   inflationRate: number | null
+  currency: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +59,7 @@ export type UserMaxAggregateOutputType = {
   savings: number | null
   income: number | null
   inflationRate: number | null
+  currency: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +72,7 @@ export type UserCountAggregateOutputType = {
   savings: number
   income: number
   inflationRate: number
+  currency: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -96,6 +99,7 @@ export type UserMinAggregateInputType = {
   savings?: true
   income?: true
   inflationRate?: true
+  currency?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -108,6 +112,7 @@ export type UserMaxAggregateInputType = {
   savings?: true
   income?: true
   inflationRate?: true
+  currency?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -120,6 +125,7 @@ export type UserCountAggregateInputType = {
   savings?: true
   income?: true
   inflationRate?: true
+  currency?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -219,6 +225,7 @@ export type UserGroupByOutputType = {
   savings: number
   income: number
   inflationRate: number
+  currency: string
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -254,6 +261,7 @@ export type UserWhereInput = {
   savings?: Prisma.FloatFilter<"User"> | number
   income?: Prisma.FloatFilter<"User"> | number
   inflationRate?: Prisma.FloatFilter<"User"> | number
+  currency?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   loans?: Prisma.LoanListRelationFilter
@@ -267,6 +275,7 @@ export type UserOrderByWithRelationInput = {
   savings?: Prisma.SortOrder
   income?: Prisma.SortOrder
   inflationRate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   loans?: Prisma.LoanOrderByRelationAggregateInput
@@ -283,6 +292,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   savings?: Prisma.FloatFilter<"User"> | number
   income?: Prisma.FloatFilter<"User"> | number
   inflationRate?: Prisma.FloatFilter<"User"> | number
+  currency?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   loans?: Prisma.LoanListRelationFilter
@@ -296,6 +306,7 @@ export type UserOrderByWithAggregationInput = {
   savings?: Prisma.SortOrder
   income?: Prisma.SortOrder
   inflationRate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -316,6 +327,7 @@ export type UserScalarWhereWithAggregatesInput = {
   savings?: Prisma.FloatWithAggregatesFilter<"User"> | number
   income?: Prisma.FloatWithAggregatesFilter<"User"> | number
   inflationRate?: Prisma.FloatWithAggregatesFilter<"User"> | number
+  currency?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -328,6 +340,7 @@ export type UserCreateInput = {
   savings?: number
   income?: number
   inflationRate?: number
+  currency?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
@@ -341,6 +354,7 @@ export type UserUncheckedCreateInput = {
   savings?: number
   income?: number
   inflationRate?: number
+  currency?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
@@ -354,6 +368,7 @@ export type UserUpdateInput = {
   savings?: Prisma.FloatFieldUpdateOperationsInput | number
   income?: Prisma.FloatFieldUpdateOperationsInput | number
   inflationRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
@@ -367,6 +382,7 @@ export type UserUncheckedUpdateInput = {
   savings?: Prisma.FloatFieldUpdateOperationsInput | number
   income?: Prisma.FloatFieldUpdateOperationsInput | number
   inflationRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
@@ -380,6 +396,7 @@ export type UserCreateManyInput = {
   savings?: number
   income?: number
   inflationRate?: number
+  currency?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -392,6 +409,7 @@ export type UserUpdateManyMutationInput = {
   savings?: Prisma.FloatFieldUpdateOperationsInput | number
   income?: Prisma.FloatFieldUpdateOperationsInput | number
   inflationRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -404,6 +422,7 @@ export type UserUncheckedUpdateManyInput = {
   savings?: Prisma.FloatFieldUpdateOperationsInput | number
   income?: Prisma.FloatFieldUpdateOperationsInput | number
   inflationRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -416,6 +435,7 @@ export type UserCountOrderByAggregateInput = {
   savings?: Prisma.SortOrder
   income?: Prisma.SortOrder
   inflationRate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -434,6 +454,7 @@ export type UserMaxOrderByAggregateInput = {
   savings?: Prisma.SortOrder
   income?: Prisma.SortOrder
   inflationRate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -446,6 +467,7 @@ export type UserMinOrderByAggregateInput = {
   savings?: Prisma.SortOrder
   income?: Prisma.SortOrder
   inflationRate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -499,6 +521,7 @@ export type UserCreateWithoutLoansInput = {
   savings?: number
   income?: number
   inflationRate?: number
+  currency?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -511,6 +534,7 @@ export type UserUncheckedCreateWithoutLoansInput = {
   savings?: number
   income?: number
   inflationRate?: number
+  currency?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -539,6 +563,7 @@ export type UserUpdateWithoutLoansInput = {
   savings?: Prisma.FloatFieldUpdateOperationsInput | number
   income?: Prisma.FloatFieldUpdateOperationsInput | number
   inflationRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -551,6 +576,7 @@ export type UserUncheckedUpdateWithoutLoansInput = {
   savings?: Prisma.FloatFieldUpdateOperationsInput | number
   income?: Prisma.FloatFieldUpdateOperationsInput | number
   inflationRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -594,6 +620,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   savings?: boolean
   income?: boolean
   inflationRate?: boolean
+  currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   loans?: boolean | Prisma.User$loansArgs<ExtArgs>
@@ -608,6 +635,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   savings?: boolean
   income?: boolean
   inflationRate?: boolean
+  currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -620,6 +648,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   savings?: boolean
   income?: boolean
   inflationRate?: boolean
+  currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -632,11 +661,12 @@ export type UserSelectScalar = {
   savings?: boolean
   income?: boolean
   inflationRate?: boolean
+  currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "savings" | "income" | "inflationRate" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "savings" | "income" | "inflationRate" | "currency" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   loans?: boolean | Prisma.User$loansArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -657,6 +687,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     savings: number
     income: number
     inflationRate: number
+    currency: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1090,6 +1121,7 @@ export interface UserFieldRefs {
   readonly savings: Prisma.FieldRef<"User", 'Float'>
   readonly income: Prisma.FieldRef<"User", 'Float'>
   readonly inflationRate: Prisma.FieldRef<"User", 'Float'>
+  readonly currency: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

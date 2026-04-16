@@ -8,6 +8,10 @@ export interface LoanData {
   partialAmortRate?: number;
   /** Expected annual inflation rate in % (default 0). Used to compute real (inflation-adjusted) payment values. */
   inflationRate?: number;
+  /** ISO date string for when the loan started. Used to compute progress. */
+  startDate?: string | null;
+  /** Loan category (mortgage, car, personal, etc.) */
+  category?: string;
 }
 
 export interface ScheduleEntry {
@@ -262,6 +266,60 @@ function totalInterest(schedule: ScheduleEntry[]): number {
  */
 function realInterest(schedule: ScheduleEntry[]): number {
   return schedule.reduce((sum, e) => sum + e.realPayment - e.principalPaid, 0);
+}
+
+export interface LoanProgress {
+  /** Current month index (1-based) based on start date. 0 if no start date. */
+  currentMonth: number;
+  /** Percentage of term elapsed (0–100). */
+  percentComplete: number;
+  /** Principal repaid so far based on schedule. */
+  principalPaid: number;
+  /** Remaining balance as of the current month. */
+  remainingBalance: number;
+  /** Whether the loan is past its final scheduled month. */
+  isComplete: boolean;
+}
+
+/**
+ * Calculates real-time loan progress using the amortization schedule and
+ * the number of months elapsed since the start date.
+ */
+export function calculateLoanProgress(
+  loan: LoanData,
+  asOf: Date = new Date()
+): LoanProgress {
+  const zero: LoanProgress = {
+    currentMonth: 0,
+    percentComplete: 0,
+    principalPaid: 0,
+    remainingBalance: loan.amount,
+    isComplete: false,
+  };
+
+  if (!loan.startDate) return zero;
+
+  const start = new Date(loan.startDate);
+  const monthsElapsed =
+    (asOf.getFullYear() - start.getFullYear()) * 12 +
+    (asOf.getMonth() - start.getMonth());
+
+  if (monthsElapsed <= 0) return zero;
+
+  const currentMonth = Math.min(monthsElapsed, loan.months);
+  const isComplete = monthsElapsed >= loan.months;
+  const schedule = generateAmortizationSchedule(loan);
+  const elapsed = schedule.slice(0, currentMonth);
+  const principalPaid = elapsed.reduce((s, e) => s + e.principalPaid, 0);
+  const remainingBalance = isComplete ? 0 : (schedule[currentMonth]?.balance ?? 0);
+
+  return {
+    currentMonth,
+    percentComplete: Math.round((currentMonth / loan.months) * 100),
+    principalPaid,
+    remainingBalance,
+    isComplete,
+  };
 }
 
 /**

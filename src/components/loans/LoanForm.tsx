@@ -17,6 +17,9 @@ export function LoanForm({ loan }: LoanFormProps) {
     partialAmortRate: loan?.partialAmortRate?.toString() ?? "0",
     totalAmortRate: loan?.totalAmortRate?.toString() ?? "0",
     months: loan?.months?.toString() ?? "",
+    startDate: loan?.startDate ? loan.startDate.slice(0, 10) : "",
+    category: loan?.category ?? "other",
+    reminderDays: loan?.reminderDays?.toString() ?? "0",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,6 +58,9 @@ export function LoanForm({ loan }: LoanFormProps) {
       partialAmortRate: Number(fields.partialAmortRate),
       totalAmortRate: Number(fields.totalAmortRate),
       months,
+      startDate: fields.startDate ? new Date(fields.startDate).toISOString() : null,
+      category: fields.category,
+      reminderDays: Number(fields.reminderDays),
     };
 
     const url = loan ? `/api/loans/${loan.id}` : "/api/loans";
@@ -196,6 +202,61 @@ export function LoanForm({ loan }: LoanFormProps) {
             placeholder="0"
           />
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="startDate" className={labelClass}>
+            Start date
+          </label>
+          <input
+            id="startDate"
+            name="startDate"
+            type="date"
+            value={fields.startDate}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="category" className={labelClass}>
+            Category
+          </label>
+          <select
+            id="category"
+            name="category"
+            value={fields.category}
+            onChange={(e) => setFields((p) => ({ ...p, category: e.target.value }))}
+            className={inputClass}
+          >
+            <option value="mortgage">Mortgage</option>
+            <option value="car">Car</option>
+            <option value="personal">Personal</option>
+            <option value="student">Student</option>
+            <option value="business">Business</option>
+            <option value="credit_card">Credit Card</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="reminderDays" className={labelClass}>
+          Payment reminder (days before due)
+        </label>
+        <input
+          id="reminderDays"
+          name="reminderDays"
+          type="number"
+          min="0"
+          max="30"
+          step="1"
+          value={fields.reminderDays}
+          onChange={handleChange}
+          className={inputClass}
+          placeholder="0 = no reminder"
+        />
       </div>
 
       <div className="flex gap-3 pt-2">

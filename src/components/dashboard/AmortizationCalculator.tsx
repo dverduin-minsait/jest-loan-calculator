@@ -13,6 +13,21 @@ interface AmortizationCalculatorProps {
   loans: LoanData[];
 }
 
+function exportCsv(schedule: ReturnType<typeof generateAmortizationSchedule>, loanName: string) {
+  const header = "Month,Payment,Principal,Interest,Balance";
+  const rows = schedule.map((r) =>
+    `${r.month},${r.payment.toFixed(2)},${r.principal.toFixed(2)},${r.interest.toFixed(2)},${r.balance.toFixed(2)}`
+  );
+  const csv = [header, ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${loanName.replace(/[^a-z0-9]/gi, "_")}_amortization.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
   const [selectedLoanId, setSelectedLoanId] = useState(loans[0]?.id ?? "");
   const [month, setMonth] = useState("12");
@@ -167,6 +182,18 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
               months)
             </strong>
           </p>
+        </div>
+      )}
+
+      {selectedLoan && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => exportCsv(originalSchedule, selectedLoan.name)}
+            className="py-1.5 px-3 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            ↓ Export schedule as CSV
+          </button>
         </div>
       )}
 

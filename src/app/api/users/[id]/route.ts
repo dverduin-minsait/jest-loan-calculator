@@ -30,7 +30,7 @@ export async function PUT(
   }
 
   const body = await req.json();
-  const { name, savings, income, inflationRate, password } = body;
+  const { name, savings, income, inflationRate, currency, password } = body;
 
   if (password !== undefined && String(password).length < 8) {
     return NextResponse.json(
@@ -39,7 +39,7 @@ export async function PUT(
     );
   }
 
-  const user = await updateUser(id, { name, savings, income, inflationRate, password });
+  const user = await updateUser(id, { name, savings, income, inflationRate, currency, password });
   return NextResponse.json(user);
 }
 

@@ -11,28 +11,44 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String
-  savings   Float    @default(0)
-  income    Float    @default(0)
-  inflationRate Float  @default(0)
-  loans     Loan[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  password      String
+  savings       Float    @default(0)
+  income        Float    @default(0)
+  inflationRate Float    @default(0)
+  currency      String   @default("EUR")
+  loans         Loan[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Loan {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   name             String
   amount           Float
   interest         Float
-  partialAmortRate Float    @default(0)
-  totalAmortRate   Float    @default(0)
+  partialAmortRate Float     @default(0)
+  totalAmortRate   Float     @default(0)
   months           Int
+  startDate        DateTime?
+  category         String    @default("other")
+  reminderDays     Int       @default(0)
   userId           String
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments         Payment[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  loanId    String
+  loan      Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  amount    Float
+  paidAt    DateTime @default(now())
+  note      String   @default("")
+  type      String   @default("regular")
+  createdAt DateTime @default(now())
 }

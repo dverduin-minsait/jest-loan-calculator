@@ -8,6 +8,8 @@ import { OptimalAmortizationAdvisor } from "@/components/dashboard/OptimalAmorti
 import { AvalancheSimulator } from "@/components/dashboard/AvalancheSimulator";
 import { LoanList } from "@/components/loans/LoanList";
 import { LoanSummaryCard } from "@/components/dashboard/LoanSummaryCard";
+import { WhatIfComparison } from "@/components/dashboard/WhatIfComparison";
+import { ExchangeRateWidget } from "@/components/dashboard/ExchangeRateWidget";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import Link from "next/link";
@@ -20,7 +22,7 @@ export default async function DashboardPage() {
   const [user, loans] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { id: true, name: true, savings: true, income: true, inflationRate: true },
+      select: { id: true, name: true, savings: true, income: true, inflationRate: true, currency: true },
     }),
     prisma.loan.findMany({
       where: { userId: session.user.id },
@@ -30,6 +32,8 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
+  const currency = user.currency ?? "EUR";
+
   const loanData = loans.map((l: typeof loans[number]) => ({
     id: l.id,
     name: l.name,
@@ -38,6 +42,8 @@ export default async function DashboardPage() {
     months: l.months,
     inflationRate: user.inflationRate,
     partialAmortRate: l.partialAmortRate,
+    startDate: l.startDate ? l.startDate.toISOString() : null,
+    category: l.category,
   }));
 
   return (
@@ -58,13 +64,26 @@ export default async function DashboardPage() {
           initialSavings={user.savings}
           initialIncome={user.income}
           initialInflationRate={user.inflationRate}
+          initialCurrency={currency}
         />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="Exchange Rates">
+        <ErrorBoundary>
+          <ExchangeRateWidget baseCurrency={currency} />
+        </ErrorBoundary>
       </CollapsibleSection>
 
       {loanData.length > 0 ? (
         <>
           <CollapsibleSection title="Loan Cost Summary">
-            <LoanSummaryCard loans={loanData} />
+            <LoanSummaryCard loans={loanData} income={user.income} currency={currency} />
+          </CollapsibleSection>
+
+          <CollapsibleSection title="What-If Comparison">
+            <ErrorBoundary>
+              <WhatIfComparison loans={loanData} currency={currency} />
+            </ErrorBoundary>
           </CollapsibleSection>
 
           <CollapsibleSection title="Debt Overview">

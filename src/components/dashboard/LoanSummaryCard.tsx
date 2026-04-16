@@ -2,23 +2,24 @@
 
 import {
   generateAmortizationSchedule,
+  calculateMonthlyPayment,
   type LoanData,
 } from "@/lib/loan-calculations";
+import { formatCurrency } from "@/lib/format";
+import { LOAN_CATEGORIES } from "@/lib/format";
 
 interface LoanSummaryCardProps {
   loans: LoanData[];
+  income?: number;
+  currency?: string;
 }
 
-function fmt(n: number) {
-  return n.toLocaleString("en", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  });
-}
-
-export function LoanSummaryCard({ loans }: LoanSummaryCardProps) {
+export function LoanSummaryCard({ loans, income = 0, currency = "EUR" }: LoanSummaryCardProps) {
   if (loans.length === 0) return null;
+
+  function fmt(n: number) {
+    return formatCurrency(n, currency);
+  }
 
   const hasInflation = loans.some((l) => (l.inflationRate ?? 0) > 0);
 
@@ -28,18 +29,36 @@ export function LoanSummaryCard({ loans }: LoanSummaryCardProps) {
       const totalPaid = schedule.reduce((s, e) => s + e.payment, 0);
       const totalRealPaid = schedule.reduce((s, e) => s + e.realPayment, 0);
       const totalInterest = schedule.reduce((s, e) => s + e.interestPaid, 0);
+      const monthlyPayment = calculateMonthlyPayment(loan.amount, loan.interest, loan.months);
       return {
         principal: acc.principal + loan.amount,
         totalPaid: acc.totalPaid + totalPaid,
         totalRealPaid: acc.totalRealPaid + totalRealPaid,
         totalInterest: acc.totalInterest + totalInterest,
+        monthlyPayments: acc.monthlyPayments + monthlyPayment,
       };
     },
-    { principal: 0, totalPaid: 0, totalRealPaid: 0, totalInterest: 0 }
+    { principal: 0, totalPaid: 0, totalRealPaid: 0, totalInterest: 0, monthlyPayments: 0 }
   );
 
   const interestRatio =
     totals.principal > 0 ? (totals.totalInterest / totals.principal) * 100 : 0;
+
+  const dtiRatio = income > 0 ? (totals.monthlyPayments / income) * 100 : null;
+  const dtiColor =
+    dtiRatio === null ? "" :
+    dtiRatio < 36 ? "text-green-600" :
+    dtiRatio < 50 ? "text-amber-600" :
+    "text-red-600";
+
+  const categoryBreakdown = LOAN_CATEGORIES
+    .map((cat) => ({
+      label: cat.label,
+      total: loans
+        .filter((l) => (l.category ?? "other") === cat.value)
+        .reduce((s, l) => s + l.amount, 0),
+    }))
+    .filter((c) => c.total > 0);
 
   return (
     <>
@@ -64,6 +83,51 @@ export function LoanSummaryCard({ loans }: LoanSummaryCardProps) {
           </p>
         </div>
       </div>
+
+      {dtiRatio !== null && (
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-xs text-gray-500 uppercase tracking-wide">
+              Debt-to-income ratio
+            </p>
+            <p className={`text-base font-semibold ${dtiColor}`}>
+              {dtiRatio.toFixed(1)}%
+              <span className="text-xs font-normal text-gray-400 ml-1">
+                {dtiRatio < 36 ? "(healthy)" : dtiRatio < 50 ? "(concerning)" : "(high)"}
+              </span>
+            </p>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className={`h-2 rounded-full transition-all ${dtiRatio < 36 ? "bg-green-500" : dtiRatio < 50 ? "bg-amber-500" : "bg-red-500"}`}
+              style={{ width: `${Math.min(dtiRatio, 100)}%` }}
+              role="progressbar"
+              aria-valuenow={Math.round(dtiRatio)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`DTI ratio: ${dtiRatio.toFixed(1)}%`}
+            />
+          </div>
+          <p className="text-xs text-gray-400 mt-1">
+            Monthly payments {fmt(totals.monthlyPayments)} vs income {fmt(income)}
+          </p>
+        </div>
+      )}
+
+      {categoryBreakdown.length > 1 && (
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">By category</p>
+          <div className="flex flex-wrap gap-3">
+            {categoryBreakdown.map((c) => (
+              <div key={c.label} className="text-sm">
+                <span className="text-gray-500">{c.label}: </span>
+                <span className="font-medium text-gray-900">{fmt(c.total)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {hasInflation && (
         <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>

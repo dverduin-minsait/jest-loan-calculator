@@ -12,6 +12,7 @@ export async function getUser(id: string) {
       savings: true,
       income: true,
       inflationRate: true,
+      currency: true,
       createdAt: true,
     },
   });
@@ -33,13 +34,14 @@ export async function createUser(data: {
 
 export async function updateUser(
   id: string,
-  data: { name?: string; savings?: number; income?: number; inflationRate?: number; password?: string }
+  data: { name?: string; savings?: number; income?: number; inflationRate?: number; currency?: string; password?: string }
 ) {
   const updateData: {
     name?: string;
     savings?: number;
     income?: number;
     inflationRate?: number;
+    currency?: string;
     password?: string;
   } = {};
 
@@ -47,6 +49,7 @@ export async function updateUser(
   if (data.savings !== undefined) updateData.savings = Number(data.savings);
   if (data.income !== undefined) updateData.income = Number(data.income);
   if (data.inflationRate !== undefined) updateData.inflationRate = Number(data.inflationRate);
+  if (data.currency !== undefined) updateData.currency = String(data.currency);
   if (data.password !== undefined) {
     updateData.password = await bcrypt.hash(String(data.password), 12);
   }
@@ -54,7 +57,7 @@ export async function updateUser(
   return prisma.user.update({
     where: { id },
     data: updateData,
-    select: { id: true, email: true, name: true, savings: true, income: true, inflationRate: true },
+    select: { id: true, email: true, name: true, savings: true, income: true, inflationRate: true, currency: true },
   });
 }
 

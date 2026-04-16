@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SUPPORTED_CURRENCIES } from "@/lib/format";
 
 interface SavingsIncomePanelProps {
   userId: string;
   initialSavings: number;
   initialIncome: number;
   initialInflationRate: number;
+  initialCurrency?: string;
 }
 
 export function SavingsIncomePanel({
@@ -15,11 +17,13 @@ export function SavingsIncomePanel({
   initialSavings,
   initialIncome,
   initialInflationRate,
+  initialCurrency = "EUR",
 }: SavingsIncomePanelProps) {
   const router = useRouter();
   const [savings, setSavings] = useState(initialSavings.toString());
   const [income, setIncome] = useState(initialIncome.toString());
   const [inflationRate, setInflationRate] = useState(initialInflationRate.toString());
+  const [currency, setCurrency] = useState(initialCurrency);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +41,7 @@ export function SavingsIncomePanel({
         savings: Number(savings),
         income: Number(income),
         inflationRate: Number(inflationRate),
+        currency,
       }),
     });
 
@@ -61,7 +66,7 @@ export function SavingsIncomePanel({
             htmlFor="savings"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Savings (€)
+            Savings
           </label>
           <input
             id="savings"
@@ -79,7 +84,7 @@ export function SavingsIncomePanel({
             htmlFor="income"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Monthly income (€)
+            Monthly income
           </label>
           <input
             id="income"
@@ -110,6 +115,27 @@ export function SavingsIncomePanel({
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
             placeholder="0"
           />
+        </div>
+
+        <div>
+          <label
+            htmlFor="currency"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Currency
+          </label>
+          <select
+            id="currency"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-36"
+          >
+            {SUPPORTED_CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.code} — {c.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button

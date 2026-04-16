@@ -32,6 +32,7 @@ export type LoanAvgAggregateOutputType = {
   partialAmortRate: number | null
   totalAmortRate: number | null
   months: number | null
+  reminderDays: number | null
 }
 
 export type LoanSumAggregateOutputType = {
@@ -40,6 +41,7 @@ export type LoanSumAggregateOutputType = {
   partialAmortRate: number | null
   totalAmortRate: number | null
   months: number | null
+  reminderDays: number | null
 }
 
 export type LoanMinAggregateOutputType = {
@@ -50,6 +52,9 @@ export type LoanMinAggregateOutputType = {
   partialAmortRate: number | null
   totalAmortRate: number | null
   months: number | null
+  startDate: Date | null
+  category: string | null
+  reminderDays: number | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -63,6 +68,9 @@ export type LoanMaxAggregateOutputType = {
   partialAmortRate: number | null
   totalAmortRate: number | null
   months: number | null
+  startDate: Date | null
+  category: string | null
+  reminderDays: number | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -76,6 +84,9 @@ export type LoanCountAggregateOutputType = {
   partialAmortRate: number
   totalAmortRate: number
   months: number
+  startDate: number
+  category: number
+  reminderDays: number
   userId: number
   createdAt: number
   updatedAt: number
@@ -89,6 +100,7 @@ export type LoanAvgAggregateInputType = {
   partialAmortRate?: true
   totalAmortRate?: true
   months?: true
+  reminderDays?: true
 }
 
 export type LoanSumAggregateInputType = {
@@ -97,6 +109,7 @@ export type LoanSumAggregateInputType = {
   partialAmortRate?: true
   totalAmortRate?: true
   months?: true
+  reminderDays?: true
 }
 
 export type LoanMinAggregateInputType = {
@@ -107,6 +120,9 @@ export type LoanMinAggregateInputType = {
   partialAmortRate?: true
   totalAmortRate?: true
   months?: true
+  startDate?: true
+  category?: true
+  reminderDays?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -120,6 +136,9 @@ export type LoanMaxAggregateInputType = {
   partialAmortRate?: true
   totalAmortRate?: true
   months?: true
+  startDate?: true
+  category?: true
+  reminderDays?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -133,6 +152,9 @@ export type LoanCountAggregateInputType = {
   partialAmortRate?: true
   totalAmortRate?: true
   months?: true
+  startDate?: true
+  category?: true
+  reminderDays?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -233,6 +255,9 @@ export type LoanGroupByOutputType = {
   partialAmortRate: number
   totalAmortRate: number
   months: number
+  startDate: Date | null
+  category: string
+  reminderDays: number
   userId: string
   createdAt: Date
   updatedAt: Date
@@ -269,10 +294,14 @@ export type LoanWhereInput = {
   partialAmortRate?: Prisma.FloatFilter<"Loan"> | number
   totalAmortRate?: Prisma.FloatFilter<"Loan"> | number
   months?: Prisma.IntFilter<"Loan"> | number
+  startDate?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  category?: Prisma.StringFilter<"Loan"> | string
+  reminderDays?: Prisma.IntFilter<"Loan"> | number
   userId?: Prisma.StringFilter<"Loan"> | string
   createdAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  payments?: Prisma.PaymentListRelationFilter
 }
 
 export type LoanOrderByWithRelationInput = {
@@ -283,10 +312,14 @@ export type LoanOrderByWithRelationInput = {
   partialAmortRate?: Prisma.SortOrder
   totalAmortRate?: Prisma.SortOrder
   months?: Prisma.SortOrder
+  startDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
+  reminderDays?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
 }
 
 export type LoanWhereUniqueInput = Prisma.AtLeast<{
@@ -300,10 +333,14 @@ export type LoanWhereUniqueInput = Prisma.AtLeast<{
   partialAmortRate?: Prisma.FloatFilter<"Loan"> | number
   totalAmortRate?: Prisma.FloatFilter<"Loan"> | number
   months?: Prisma.IntFilter<"Loan"> | number
+  startDate?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  category?: Prisma.StringFilter<"Loan"> | string
+  reminderDays?: Prisma.IntFilter<"Loan"> | number
   userId?: Prisma.StringFilter<"Loan"> | string
   createdAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  payments?: Prisma.PaymentListRelationFilter
 }, "id">
 
 export type LoanOrderByWithAggregationInput = {
@@ -314,6 +351,9 @@ export type LoanOrderByWithAggregationInput = {
   partialAmortRate?: Prisma.SortOrder
   totalAmortRate?: Prisma.SortOrder
   months?: Prisma.SortOrder
+  startDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
+  reminderDays?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -335,6 +375,9 @@ export type LoanScalarWhereWithAggregatesInput = {
   partialAmortRate?: Prisma.FloatWithAggregatesFilter<"Loan"> | number
   totalAmortRate?: Prisma.FloatWithAggregatesFilter<"Loan"> | number
   months?: Prisma.IntWithAggregatesFilter<"Loan"> | number
+  startDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
+  category?: Prisma.StringWithAggregatesFilter<"Loan"> | string
+  reminderDays?: Prisma.IntWithAggregatesFilter<"Loan"> | number
   userId?: Prisma.StringWithAggregatesFilter<"Loan"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Loan"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Loan"> | Date | string
@@ -348,9 +391,13 @@ export type LoanCreateInput = {
   partialAmortRate?: number
   totalAmortRate?: number
   months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutLoansInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateInput = {
@@ -361,9 +408,13 @@ export type LoanUncheckedCreateInput = {
   partialAmortRate?: number
   totalAmortRate?: number
   months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUpdateInput = {
@@ -374,9 +425,13 @@ export type LoanUpdateInput = {
   partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutLoansNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateInput = {
@@ -387,9 +442,13 @@ export type LoanUncheckedUpdateInput = {
   partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanCreateManyInput = {
@@ -400,6 +459,9 @@ export type LoanCreateManyInput = {
   partialAmortRate?: number
   totalAmortRate?: number
   months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -413,6 +475,9 @@ export type LoanUpdateManyMutationInput = {
   partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -425,6 +490,9 @@ export type LoanUncheckedUpdateManyInput = {
   partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -448,6 +516,9 @@ export type LoanCountOrderByAggregateInput = {
   partialAmortRate?: Prisma.SortOrder
   totalAmortRate?: Prisma.SortOrder
   months?: Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  reminderDays?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -459,6 +530,7 @@ export type LoanAvgOrderByAggregateInput = {
   partialAmortRate?: Prisma.SortOrder
   totalAmortRate?: Prisma.SortOrder
   months?: Prisma.SortOrder
+  reminderDays?: Prisma.SortOrder
 }
 
 export type LoanMaxOrderByAggregateInput = {
@@ -469,6 +541,9 @@ export type LoanMaxOrderByAggregateInput = {
   partialAmortRate?: Prisma.SortOrder
   totalAmortRate?: Prisma.SortOrder
   months?: Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  reminderDays?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -482,6 +557,9 @@ export type LoanMinOrderByAggregateInput = {
   partialAmortRate?: Prisma.SortOrder
   totalAmortRate?: Prisma.SortOrder
   months?: Prisma.SortOrder
+  startDate?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  reminderDays?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -493,6 +571,12 @@ export type LoanSumOrderByAggregateInput = {
   partialAmortRate?: Prisma.SortOrder
   totalAmortRate?: Prisma.SortOrder
   months?: Prisma.SortOrder
+  reminderDays?: Prisma.SortOrder
+}
+
+export type LoanScalarRelationFilter = {
+  is?: Prisma.LoanWhereInput
+  isNot?: Prisma.LoanWhereInput
 }
 
 export type LoanCreateNestedManyWithoutUserInput = {
@@ -545,6 +629,24 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type LoanCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutPaymentsInput, Prisma.LoanUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.LoanWhereUniqueInput
+}
+
+export type LoanUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutPaymentsInput, Prisma.LoanUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.LoanUpsertWithoutPaymentsInput
+  connect?: Prisma.LoanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LoanUpdateToOneWithWhereWithoutPaymentsInput, Prisma.LoanUpdateWithoutPaymentsInput>, Prisma.LoanUncheckedUpdateWithoutPaymentsInput>
+}
+
 export type LoanCreateWithoutUserInput = {
   id?: string
   name: string
@@ -553,8 +655,12 @@ export type LoanCreateWithoutUserInput = {
   partialAmortRate?: number
   totalAmortRate?: number
   months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateWithoutUserInput = {
@@ -565,8 +671,12 @@ export type LoanUncheckedCreateWithoutUserInput = {
   partialAmortRate?: number
   totalAmortRate?: number
   months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanCreateOrConnectWithoutUserInput = {
@@ -605,9 +715,92 @@ export type LoanScalarWhereInput = {
   partialAmortRate?: Prisma.FloatFilter<"Loan"> | number
   totalAmortRate?: Prisma.FloatFilter<"Loan"> | number
   months?: Prisma.IntFilter<"Loan"> | number
+  startDate?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  category?: Prisma.StringFilter<"Loan"> | string
+  reminderDays?: Prisma.IntFilter<"Loan"> | number
   userId?: Prisma.StringFilter<"Loan"> | string
   createdAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
+}
+
+export type LoanCreateWithoutPaymentsInput = {
+  id?: string
+  name: string
+  amount: number
+  interest: number
+  partialAmortRate?: number
+  totalAmortRate?: number
+  months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutLoansInput
+}
+
+export type LoanUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  name: string
+  amount: number
+  interest: number
+  partialAmortRate?: number
+  totalAmortRate?: number
+  months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type LoanCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.LoanWhereUniqueInput
+  create: Prisma.XOR<Prisma.LoanCreateWithoutPaymentsInput, Prisma.LoanUncheckedCreateWithoutPaymentsInput>
+}
+
+export type LoanUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.LoanUpdateWithoutPaymentsInput, Prisma.LoanUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.LoanCreateWithoutPaymentsInput, Prisma.LoanUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.LoanWhereInput
+}
+
+export type LoanUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.LoanWhereInput
+  data: Prisma.XOR<Prisma.LoanUpdateWithoutPaymentsInput, Prisma.LoanUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type LoanUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  interest?: Prisma.FloatFieldUpdateOperationsInput | number
+  partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutLoansNestedInput
+}
+
+export type LoanUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  interest?: Prisma.FloatFieldUpdateOperationsInput | number
+  partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
+  months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type LoanCreateManyUserInput = {
@@ -618,6 +811,9 @@ export type LoanCreateManyUserInput = {
   partialAmortRate?: number
   totalAmortRate?: number
   months: number
+  startDate?: Date | string | null
+  category?: string
+  reminderDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -630,8 +826,12 @@ export type LoanUpdateWithoutUserInput = {
   partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateWithoutUserInput = {
@@ -642,8 +842,12 @@ export type LoanUncheckedUpdateWithoutUserInput = {
   partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateManyWithoutUserInput = {
@@ -654,10 +858,42 @@ export type LoanUncheckedUpdateManyWithoutUserInput = {
   partialAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   totalAmortRate?: Prisma.FloatFieldUpdateOperationsInput | number
   months?: Prisma.IntFieldUpdateOperationsInput | number
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type LoanCountOutputType
+ */
+
+export type LoanCountOutputType = {
+  payments: number
+}
+
+export type LoanCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  payments?: boolean | LoanCountOutputTypeCountPaymentsArgs
+}
+
+/**
+ * LoanCountOutputType without action
+ */
+export type LoanCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoanCountOutputType
+   */
+  select?: Prisma.LoanCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * LoanCountOutputType without action
+ */
+export type LoanCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
 
 
 export type LoanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -668,10 +904,15 @@ export type LoanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   partialAmortRate?: boolean
   totalAmortRate?: boolean
   months?: boolean
+  startDate?: boolean
+  category?: boolean
+  reminderDays?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payments?: boolean | Prisma.Loan$paymentsArgs<ExtArgs>
+  _count?: boolean | Prisma.LoanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["loan"]>
 
 export type LoanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -682,6 +923,9 @@ export type LoanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   partialAmortRate?: boolean
   totalAmortRate?: boolean
   months?: boolean
+  startDate?: boolean
+  category?: boolean
+  reminderDays?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -696,6 +940,9 @@ export type LoanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   partialAmortRate?: boolean
   totalAmortRate?: boolean
   months?: boolean
+  startDate?: boolean
+  category?: boolean
+  reminderDays?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -710,14 +957,19 @@ export type LoanSelectScalar = {
   partialAmortRate?: boolean
   totalAmortRate?: boolean
   months?: boolean
+  startDate?: boolean
+  category?: boolean
+  reminderDays?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LoanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "amount" | "interest" | "partialAmortRate" | "totalAmortRate" | "months" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["loan"]>
+export type LoanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "amount" | "interest" | "partialAmortRate" | "totalAmortRate" | "months" | "startDate" | "category" | "reminderDays" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["loan"]>
 export type LoanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  payments?: boolean | Prisma.Loan$paymentsArgs<ExtArgs>
+  _count?: boolean | Prisma.LoanCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LoanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -730,6 +982,7 @@ export type $LoanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "Loan"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -739,6 +992,9 @@ export type $LoanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     partialAmortRate: number
     totalAmortRate: number
     months: number
+    startDate: Date | null
+    category: string
+    reminderDays: number
     userId: string
     createdAt: Date
     updatedAt: Date
@@ -1137,6 +1393,7 @@ readonly fields: LoanFieldRefs;
 export interface Prisma__LoanClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  payments<T extends Prisma.Loan$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Loan$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1173,6 +1430,9 @@ export interface LoanFieldRefs {
   readonly partialAmortRate: Prisma.FieldRef<"Loan", 'Float'>
   readonly totalAmortRate: Prisma.FieldRef<"Loan", 'Float'>
   readonly months: Prisma.FieldRef<"Loan", 'Int'>
+  readonly startDate: Prisma.FieldRef<"Loan", 'DateTime'>
+  readonly category: Prisma.FieldRef<"Loan", 'String'>
+  readonly reminderDays: Prisma.FieldRef<"Loan", 'Int'>
   readonly userId: Prisma.FieldRef<"Loan", 'String'>
   readonly createdAt: Prisma.FieldRef<"Loan", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Loan", 'DateTime'>
@@ -1572,6 +1832,30 @@ export type LoanDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Loans to delete.
    */
   limit?: number
+}
+
+/**
+ * Loan.payments
+ */
+export type Loan$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
 }
 
 /**
