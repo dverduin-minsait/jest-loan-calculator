@@ -41,22 +41,22 @@ export function CollapsibleSection({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+    <div className="bg-card rounded-xl border border-border shadow-sm">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-medium text-gray-900">
+          <h2 className="text-lg font-medium text-foreground">
             <button
               type="button"
               onClick={toggle}
               aria-expanded={isOpen}
-              className="flex items-center gap-2 text-left hover:text-gray-700 transition-colors"
+              className="flex items-center gap-2 text-left hover:text-label transition-colors"
             >
               {title}
               <ChevronIcon isOpen={isOpen} />
             </button>
           </h2>
           {subtitle && (
-            <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
           )}
         </div>
         {headerExtra && (
@@ -71,7 +71,7 @@ export function CollapsibleSection({
 function ChevronIcon({ isOpen }: { isOpen: boolean }) {
   return (
     <svg
-      className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+      className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"

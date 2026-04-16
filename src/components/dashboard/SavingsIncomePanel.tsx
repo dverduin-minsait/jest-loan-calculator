@@ -64,7 +64,7 @@ export function SavingsIncomePanel({
         <div>
           <label
             htmlFor="savings"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             Savings
           </label>
@@ -75,14 +75,14 @@ export function SavingsIncomePanel({
             step="0.01"
             value={savings}
             onChange={(e) => setSavings(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-40"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-40"
           />
         </div>
 
         <div>
           <label
             htmlFor="income"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             Monthly income
           </label>
@@ -93,14 +93,14 @@ export function SavingsIncomePanel({
             step="0.01"
             value={income}
             onChange={(e) => setIncome(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-40"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-40"
           />
         </div>
 
         <div>
           <label
             htmlFor="inflation-rate"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             Expected inflation (%/yr)
           </label>
@@ -112,7 +112,7 @@ export function SavingsIncomePanel({
             step="0.1"
             value={inflationRate}
             onChange={(e) => setInflationRate(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
             placeholder="0"
           />
         </div>
@@ -120,7 +120,7 @@ export function SavingsIncomePanel({
         <div>
           <label
             htmlFor="currency"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             Currency
           </label>
@@ -128,7 +128,7 @@ export function SavingsIncomePanel({
             id="currency"
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-36"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-36"
           >
             {SUPPORTED_CURRENCIES.map((c) => (
               <option key={c.code} value={c.code}>

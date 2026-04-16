@@ -47,7 +47,7 @@ export function RegisterForm() {
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-label mb-1"
         >
           Name
         </label>
@@ -57,7 +57,7 @@ export function RegisterForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Jane Doe"
         />
       </div>
@@ -65,7 +65,7 @@ export function RegisterForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-label mb-1"
         >
           Email
         </label>
@@ -75,7 +75,7 @@ export function RegisterForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="you@example.com"
         />
       </div>
@@ -83,10 +83,10 @@ export function RegisterForm() {
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-label mb-1"
         >
           Password
-          <span className="text-gray-400 font-normal"> (min. 8 chars)</span>
+          <span className="text-muted-foreground font-normal"> (min. 8 chars)</span>
         </label>
         <input
           id="password"
@@ -95,7 +95,7 @@ export function RegisterForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={8}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="••••••••"
         />
       </div>

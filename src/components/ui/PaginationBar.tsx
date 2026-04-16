@@ -16,29 +16,29 @@ export function PaginationBar({ page, totalPages }: PaginationBarProps) {
       {page > 1 ? (
         <Link
           href={`?page=${page - 1}`}
-          className="rounded-md border px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+          className="rounded-md border border-border px-3 py-1.5 text-sm text-label hover:bg-muted"
         >
           Previous
         </Link>
       ) : (
-        <span aria-disabled="true" className="rounded-md border px-3 py-1.5 text-sm text-gray-300 cursor-default">
+        <span aria-disabled="true" className="rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground opacity-50 cursor-default">
           Previous
         </span>
       )}
 
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-muted-foreground">
         Page {page} of {totalPages}
       </span>
 
       {page < totalPages ? (
         <Link
           href={`?page=${page + 1}`}
-          className="rounded-md border px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+          className="rounded-md border border-border px-3 py-1.5 text-sm text-label hover:bg-muted"
         >
           Next
         </Link>
       ) : (
-        <span aria-disabled="true" className="rounded-md border px-3 py-1.5 text-sm text-gray-300 cursor-default">
+        <span aria-disabled="true" className="rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground opacity-50 cursor-default">
           Next
         </span>
       )}

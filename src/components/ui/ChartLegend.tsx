@@ -33,7 +33,7 @@ export function ChartLegend({ items }: ChartLegendProps) {
       {items.map((item) => (
         <div
           key={item.key}
-          className="flex items-center gap-1.5 min-w-0 text-xs text-gray-600"
+          className="flex items-center gap-1.5 min-w-0 text-xs text-muted-foreground"
           role="listitem"
         >
           <LineSwatch color={item.color} dashed={item.dashed} />

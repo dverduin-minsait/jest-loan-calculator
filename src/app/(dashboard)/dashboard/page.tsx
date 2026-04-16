@@ -34,6 +34,11 @@ export default async function DashboardPage() {
 
   const currency = user.currency ?? "EUR";
 
+  const serializedLoans = loans.map((l: typeof loans[number]) => ({
+    ...l,
+    startDate: l.startDate ? l.startDate.toISOString() : null,
+  }));
+
   const loanData = loans.map((l: typeof loans[number]) => ({
     id: l.id,
     name: l.name,
@@ -49,7 +54,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
         <Link
           href="/loans/new"
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
@@ -117,8 +122,8 @@ export default async function DashboardPage() {
           </CollapsibleSection>
         </>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
-          <p className="text-gray-500 mb-4">No loans yet.</p>
+        <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
+          <p className="text-muted-foreground mb-4">No loans yet.</p>
           <Link
             href="/loans/new"
             className="text-blue-600 hover:underline text-sm"
@@ -136,7 +141,7 @@ export default async function DashboardPage() {
           </Link>
         }
       >
-        <LoanList loans={loans} />
+        <LoanList loans={serializedLoans} />
       </CollapsibleSection>
     </div>
   );

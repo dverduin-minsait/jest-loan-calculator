@@ -64,19 +64,19 @@ export function LoanSummaryCard({ loans, income = 0, currency = "EUR" }: LoanSum
     <>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Loans</p>
-          <p className="text-xl font-semibold text-gray-900">{loans.length}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Loans</p>
+          <p className="text-xl font-semibold text-foreground">{loans.length}</p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Total principal</p>
-          <p className="text-xl font-semibold text-gray-900">{fmt(totals.principal)}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Total principal</p>
+          <p className="text-xl font-semibold text-foreground">{fmt(totals.principal)}</p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Total you will pay</p>
-          <p className="text-xl font-semibold text-gray-900">{fmt(totals.totalPaid)}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Total you will pay</p>
+          <p className="text-xl font-semibold text-foreground">{fmt(totals.totalPaid)}</p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Total interest cost</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Total interest cost</p>
           <p className="text-xl font-semibold text-red-600">
             {fmt(totals.totalInterest)}
             <span className="text-sm text-red-400 ml-1">({interestRatio.toFixed(1)}%)</span>
@@ -85,9 +85,9 @@ export function LoanSummaryCard({ loans, income = 0, currency = "EUR" }: LoanSum
       </div>
 
       {dtiRatio !== null && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
+        <div className="mt-4 pt-4 border-t border-divider">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-xs text-gray-500 uppercase tracking-wide">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">
               Debt-to-income ratio
             </p>
             <p className={`text-base font-semibold ${dtiColor}`}>
@@ -97,7 +97,7 @@ export function LoanSummaryCard({ loans, income = 0, currency = "EUR" }: LoanSum
               </span>
             </p>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-track rounded-full h-2">
             <div
               className={`h-2 rounded-full transition-all ${dtiRatio < 36 ? "bg-green-500" : dtiRatio < 50 ? "bg-amber-500" : "bg-red-500"}`}
               style={{ width: `${Math.min(dtiRatio, 100)}%` }}
@@ -108,20 +108,20 @@ export function LoanSummaryCard({ loans, income = 0, currency = "EUR" }: LoanSum
               aria-label={`DTI ratio: ${dtiRatio.toFixed(1)}%`}
             />
           </div>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Monthly payments {fmt(totals.monthlyPayments)} vs income {fmt(income)}
           </p>
         </div>
       )}
 
       {categoryBreakdown.length > 1 && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">By category</p>
+        <div className="mt-4 pt-4 border-t border-divider">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">By category</p>
           <div className="flex flex-wrap gap-3">
             {categoryBreakdown.map((c) => (
               <div key={c.label} className="text-sm">
-                <span className="text-gray-500">{c.label}: </span>
-                <span className="font-medium text-gray-900">{fmt(c.total)}</span>
+                <span className="text-muted-foreground">{c.label}: </span>
+                <span className="font-medium text-foreground">{fmt(c.total)}</span>
               </div>
             ))}
           </div>
@@ -129,15 +129,15 @@ export function LoanSummaryCard({ loans, income = 0, currency = "EUR" }: LoanSum
       )}
 
       {hasInflation && (
-        <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="mt-4 pt-4 border-t border-divider grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">
               Real total paid <span className="normal-case text-gray-400">(today&apos;s money)</span>
             </p>
-            <p className="text-xl font-semibold text-gray-900">{fmt(totals.totalRealPaid)}</p>
+            <p className="text-xl font-semibold text-foreground">{fmt(totals.totalRealPaid)}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Inflation benefit</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Inflation benefit</p>
             <p className="text-xl font-semibold text-green-600">
               {fmt(totals.totalPaid - totals.totalRealPaid)}
               <span className="text-sm text-green-400 ml-1">less in real terms</span>

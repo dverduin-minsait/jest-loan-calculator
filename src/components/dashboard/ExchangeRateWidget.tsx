@@ -27,7 +27,7 @@ export function ExchangeRateWidget({ baseCurrency = "EUR" }: ExchangeRateWidgetP
 
   if (loading) {
     return (
-      <p className="text-sm text-gray-500 dark:text-slate-400">Loading exchange rates…</p>
+      <p className="text-sm text-muted-foreground">Loading exchange rates…</p>
     );
   }
 
@@ -41,7 +41,7 @@ export function ExchangeRateWidget({ baseCurrency = "EUR" }: ExchangeRateWidgetP
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-gray-500 dark:text-slate-400">
+      <p className="text-xs text-muted-foreground">
         1 {baseCurrency} = (live rates, cached 1 h)
       </p>
       <div className="flex flex-wrap gap-3">
@@ -51,10 +51,10 @@ export function ExchangeRateWidget({ baseCurrency = "EUR" }: ExchangeRateWidgetP
           return (
             <div
               key={c.code}
-              className="px-3 py-1.5 bg-gray-100 dark:bg-slate-800 rounded-lg text-sm"
+              className="px-3 py-1.5 bg-muted rounded-lg text-sm"
             >
-              <span className="font-medium text-gray-800 dark:text-slate-200">{c.code}</span>
-              <span className="ml-2 text-gray-600 dark:text-slate-400">
+              <span className="font-medium text-foreground">{c.code}</span>
+              <span className="ml-2 text-muted-foreground">
                 {rate.toFixed(4)}
               </span>
             </div>

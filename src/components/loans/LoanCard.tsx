@@ -59,17 +59,17 @@ export function LoanCard({ loan }: LoanCardProps) {
           onCancel={() => setConfirming(false)}
         />
       )}
-    <div className="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+    <div className="flex items-start justify-between p-4 border border-border rounded-lg hover:bg-muted transition-colors">
       <div className="space-y-1 flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="font-medium text-gray-900">{loan.name}</p>
+          <p className="font-medium text-foreground">{loan.name}</p>
           {loan.category && loan.category !== "other" && (
-            <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700">
+            <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
               {CATEGORY_LABELS[loan.category] ?? loan.category}
             </span>
           )}
         </div>
-        <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+        <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
           <span>
             Amount:{" "}
             <strong>
@@ -98,11 +98,11 @@ export function LoanCard({ loan }: LoanCardProps) {
         </div>
         {loan.startDate && (
           <div className="mt-2">
-            <div className="flex justify-between text-xs text-gray-500 mb-0.5">
+            <div className="flex justify-between text-xs text-muted-foreground mb-0.5">
               <span>Progress</span>
               <span>{progress.isComplete ? "Complete" : `${progress.percentComplete}% · month ${progress.currentMonth}/${loan.months}`}</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <div className="w-full bg-track rounded-full h-1.5">
               <div
                 className={`h-1.5 rounded-full transition-all ${progress.isComplete ? "bg-green-500" : "bg-blue-500"}`}
                 style={{ width: `${Math.min(progress.percentComplete, 100)}%` }}

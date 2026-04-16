@@ -10,24 +10,24 @@ interface NavbarProps {
 
 export function Navbar({ user }: NavbarProps) {
   return (
-    <nav aria-label="Main navigation" className="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 px-4 py-3">
+    <nav aria-label="Main navigation" className="bg-card border-b border-border px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link
             href="/dashboard"
-            className="text-lg font-semibold text-gray-900 dark:text-slate-100"
+            className="text-lg font-semibold text-foreground"
           >
             LoanCalc
           </Link>
           <Link
             href="/loans"
-            className="text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             My Loans
           </Link>
           <Link
             href="/loans/new"
-            className="text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             New Loan
           </Link>
@@ -35,10 +35,10 @@ export function Navbar({ user }: NavbarProps) {
 
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-sm text-gray-600 dark:text-slate-400">{user.name}</span>
+          <span className="text-sm text-muted-foreground">{user.name}</span>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Sign out
           </button>

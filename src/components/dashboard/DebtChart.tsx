@@ -81,7 +81,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
 
   if (data.length === 0) {
     return (
-      <p className="text-gray-500 text-sm text-center py-8">
+      <p className="text-muted-foreground text-sm text-center py-8">
         No loan data to display.
       </p>
     );

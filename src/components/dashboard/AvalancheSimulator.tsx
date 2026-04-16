@@ -36,7 +36,7 @@ export function AvalancheSimulator({ loans }: AvalancheSimulatorProps) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="monthly-extra"
-            className="text-sm font-medium text-gray-700"
+            className="text-sm font-medium text-label"
           >
             Extra per month (€)
           </label>
@@ -47,7 +47,7 @@ export function AvalancheSimulator({ loans }: AvalancheSimulatorProps) {
             step="10"
             value={monthlyExtra}
             onChange={(e) => setMonthlyExtra(e.target.value)}
-            className="w-36 rounded-md border px-3 py-2 text-sm"
+            className="w-36 rounded-md border border-input px-3 py-2 text-sm"
             placeholder="e.g. 200"
           />
         </div>
@@ -62,26 +62,26 @@ export function AvalancheSimulator({ loans }: AvalancheSimulatorProps) {
       {result && (
         <div className="mt-6 space-y-4">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="rounded-lg bg-gray-50 p-3 text-center">
-              <div className="text-xs text-gray-500">Baseline interest</div>
-              <div className="mt-1 text-base font-semibold text-gray-800">
+              <div className="rounded-lg bg-muted p-3 text-center">
+              <div className="text-xs text-muted-foreground">Baseline interest</div>
+              <div className="mt-1 text-base font-semibold text-foreground">
                 {fmt(result.totalInterestBaseline)}
               </div>
             </div>
-            <div className="rounded-lg bg-gray-50 p-3 text-center">
-              <div className="text-xs text-gray-500">Interest with extra</div>
+              <div className="rounded-lg bg-muted p-3 text-center">
+              <div className="text-xs text-muted-foreground">Interest with extra</div>
               <div className="mt-1 text-base font-semibold text-blue-600">
                 {fmt(result.totalInterestWithExtra)}
               </div>
             </div>
             <div className="rounded-lg bg-green-50 p-3 text-center">
-              <div className="text-xs text-gray-500">Interest saved</div>
+              <div className="text-xs text-muted-foreground">Interest saved</div>
               <div className="mt-1 text-base font-semibold text-green-700">
                 {fmt(result.interestSaved)}
               </div>
             </div>
             <div className="rounded-lg bg-green-50 p-3 text-center">
-              <div className="text-xs text-gray-500">Months saved</div>
+              <div className="text-xs text-muted-foreground">Months saved</div>
               <div className="mt-1 text-base font-semibold text-green-700">
                 {result.monthsSaved}
               </div>
@@ -90,7 +90,7 @@ export function AvalancheSimulator({ loans }: AvalancheSimulatorProps) {
 
           {result.payoffOrder.length > 0 && (
             <div>
-              <h3 className="mb-2 text-sm font-medium text-gray-700">
+              <h3 className="mb-2 text-sm font-medium text-label">
                 Payoff order (avalanche)
               </h3>
               <ol className="space-y-1">
@@ -100,7 +100,7 @@ export function AvalancheSimulator({ loans }: AvalancheSimulatorProps) {
                       {i + 1}
                     </span>
                     <span className="font-medium">{p.loanName}</span>
-                    <span className="text-gray-500">
+                    <span className="text-muted-foreground">
                       — paid off at month {p.month}
                     </span>
                   </li>

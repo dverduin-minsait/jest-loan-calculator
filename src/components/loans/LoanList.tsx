@@ -7,7 +7,7 @@ interface LoanListProps {
 
 export function LoanList({ loans }: LoanListProps) {
   if (loans.length === 0) {
-    return <p className="text-gray-500 text-sm">No loans to display.</p>;
+    return <p className="text-muted-foreground text-sm">No loans to display.</p>;
   }
 
   return (

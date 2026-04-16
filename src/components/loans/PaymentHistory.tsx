@@ -85,9 +85,9 @@ export function PaymentHistory({ loanId, currency = "EUR" }: PaymentHistoryProps
   }
 
   return (
-    <div className="mt-3 border-t border-gray-100 pt-3">
+    <div className="mt-3 border-t border-divider pt-3">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-medium text-gray-700">Payment history</p>
+        <p className="text-sm font-medium text-label">Payment history</p>
         <div className="flex gap-2">
           <button
             type="button"
@@ -99,7 +99,7 @@ export function PaymentHistory({ loanId, currency = "EUR" }: PaymentHistoryProps
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="text-xs text-gray-400 hover:text-gray-600"
+            className="text-xs text-muted-foreground hover:text-label"
             aria-label="Close payment history"
           >
             ✕
@@ -108,7 +108,7 @@ export function PaymentHistory({ loanId, currency = "EUR" }: PaymentHistoryProps
       </div>
 
       {adding && (
-        <form onSubmit={handleAddPayment} className="mb-3 p-3 bg-gray-50 rounded-lg space-y-2">
+        <form onSubmit={handleAddPayment} className="mb-3 p-3 bg-muted rounded-lg space-y-2">
           {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
           <div className="flex gap-2 flex-wrap">
             <input
@@ -118,13 +118,13 @@ export function PaymentHistory({ loanId, currency = "EUR" }: PaymentHistoryProps
               placeholder="Amount"
               value={form.amount}
               onChange={(e) => setForm((p) => ({ ...p, amount: e.target.value }))}
-              className="w-28 rounded border px-2 py-1 text-xs"
+              className="w-28 rounded border border-input px-2 py-1 text-xs"
               required
             />
             <select
               value={form.type}
               onChange={(e) => setForm((p) => ({ ...p, type: e.target.value }))}
-              className="rounded border px-2 py-1 text-xs"
+              className="rounded border border-input px-2 py-1 text-xs"
             >
               <option value="regular">Regular</option>
               <option value="extra">Extra</option>
@@ -133,14 +133,14 @@ export function PaymentHistory({ loanId, currency = "EUR" }: PaymentHistoryProps
               type="date"
               value={form.paidAt}
               onChange={(e) => setForm((p) => ({ ...p, paidAt: e.target.value }))}
-              className="rounded border px-2 py-1 text-xs"
+              className="rounded border border-input px-2 py-1 text-xs"
             />
             <input
               type="text"
               placeholder="Note (optional)"
               value={form.note}
               onChange={(e) => setForm((p) => ({ ...p, note: e.target.value }))}
-              className="flex-1 min-w-0 rounded border px-2 py-1 text-xs"
+              className="flex-1 min-w-0 rounded border border-input px-2 py-1 text-xs"
             />
             <button
               type="submit"
@@ -152,24 +152,24 @@ export function PaymentHistory({ loanId, currency = "EUR" }: PaymentHistoryProps
         </form>
       )}
 
-      {loading && <p className="text-xs text-gray-400">Loading…</p>}
+      {loading && <p className="text-xs text-muted-foreground">Loading…</p>}
 
       {payments !== null && payments.length === 0 && (
-        <p className="text-xs text-gray-400">No payments recorded yet.</p>
+        <p className="text-xs text-muted-foreground">No payments recorded yet.</p>
       )}
 
       {payments !== null && payments.length > 0 && (
         <div className="space-y-1">
           {payments.map((p) => (
-            <div key={p.id} className="flex items-center gap-3 text-xs text-gray-700">
-              <span className="font-medium text-gray-900">{fmt(p.amount)}</span>
-              <span className={p.type === "extra" ? "text-green-600" : "text-gray-400"}>
+            <div key={p.id} className="flex items-center gap-3 text-xs text-label">
+              <span className="font-medium text-foreground">{fmt(p.amount)}</span>
+              <span className={p.type === "extra" ? "text-green-600" : "text-muted-foreground"}>
                 {p.type}
               </span>
-              <span className="text-gray-400">
+              <span className="text-muted-foreground">
                 {new Date(p.paidAt).toLocaleDateString()}
               </span>
-              {p.note && <span className="text-gray-500 truncate">{p.note}</span>}
+              {p.note && <span className="text-muted-foreground truncate">{p.note}</span>}
               <button
                 type="button"
                 onClick={() => handleDelete(p.id)}

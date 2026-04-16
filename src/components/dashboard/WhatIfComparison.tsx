@@ -85,13 +85,13 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
   if (loans.length === 0) return null;
 
   const inputClass =
-    "px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full";
+    "px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full";
 
   return (
     <>
       <div className="flex flex-wrap gap-4 items-end mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          className="block text-sm font-medium text-label mb-1">
             Loan to refinance
           </label>
           <select
@@ -109,7 +109,7 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          className="block text-sm font-medium text-label mb-1">
             New rate (%)
           </label>
           <input
@@ -125,7 +125,7 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          className="block text-sm font-medium text-label mb-1">
             New term (months)
           </label>
           <input
@@ -141,7 +141,7 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          className="block text-sm font-medium text-label mb-1">
             New principal
           </label>
           <input
@@ -161,15 +161,15 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left pb-2 text-gray-500 font-medium pr-6" scope="col" />
-                <th className="text-right pb-2 text-gray-500 font-medium pr-6" scope="col">
+              <tr className="border-b border-border">
+                  <th className="text-left pb-2 text-muted-foreground font-medium pr-6" scope="col" />
+                  <th className="text-right pb-2 text-muted-foreground font-medium pr-6" scope="col">
                   Current
                 </th>
-                <th className="text-right pb-2 text-gray-500 font-medium pr-6" scope="col">
+                  <th className="text-right pb-2 text-muted-foreground font-medium pr-6" scope="col">
                   Hypothetical
                 </th>
-                <th className="text-right pb-2 text-gray-500 font-medium" scope="col">
+                  <th className="text-right pb-2 text-muted-foreground font-medium" scope="col">
                   Savings
                 </th>
               </tr>
@@ -195,11 +195,11 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
                   delta: comparison.deltaInterest,
                 },
               ].map((row) => (
-                <tr key={row.label} className="border-b border-gray-100">
-                  <td className="py-2 pr-6 text-gray-700">{row.label}</td>
-                  <td className="py-2 pr-6 text-right text-gray-900">{row.orig}</td>
+                <tr key={row.label} className="border-b border-divider">
+                  <td className="py-2 pr-6 text-label">{row.label}</td>
+                  <td className="py-2 pr-6 text-right text-foreground">{row.orig}</td>
                   <td className="py-2 pr-6 text-right text-blue-700 font-medium">{row.hyp}</td>
-                  <td className={`py-2 text-right font-medium ${row.delta > 0 ? "text-green-600" : row.delta < 0 ? "text-red-600" : "text-gray-400"}`}>
+                  <td className={`py-2 text-right font-medium ${row.delta > 0 ? "text-green-600" : row.delta < 0 ? "text-red-600" : "text-muted-foreground"}`}>
                     {row.delta > 0
                       ? `save ${fmt(row.delta)}`
                       : row.delta < 0
@@ -209,10 +209,10 @@ export function WhatIfComparison({ loans, currency = "EUR" }: WhatIfComparisonPr
                 </tr>
               ))}
               <tr>
-                <td className="py-2 pr-6 text-gray-700">Term</td>
-                <td className="py-2 pr-6 text-right text-gray-900">{comparison.original.months} mo</td>
+                <td className="py-2 pr-6 text-label">Term</td>
+                <td className="py-2 pr-6 text-right text-foreground">{comparison.original.months} mo</td>
                 <td className="py-2 pr-6 text-right text-blue-700 font-medium">{comparison.hypothetical.months} mo</td>
-                <td className={`py-2 text-right font-medium ${comparison.original.months - comparison.hypothetical.months > 0 ? "text-green-600" : comparison.original.months - comparison.hypothetical.months < 0 ? "text-red-600" : "text-gray-400"}`}>
+                <td className={`py-2 text-right font-medium ${comparison.original.months - comparison.hypothetical.months > 0 ? "text-green-600" : comparison.original.months - comparison.hypothetical.months < 0 ? "text-red-600" : "text-muted-foreground"}`}>
                   {comparison.original.months - comparison.hypothetical.months > 0
                     ? `${comparison.original.months - comparison.hypothetical.months} mo sooner`
                     : comparison.original.months - comparison.hypothetical.months < 0

@@ -85,7 +85,7 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
         <div>
           <label
             htmlFor="calc-loan"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             Loan
           </label>
@@ -93,7 +93,7 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
             id="calc-loan"
             value={selectedLoanId}
             onChange={(e) => setSelectedLoanId(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {loans.map((l) => (
               <option key={l.id} value={l.id}>
@@ -106,7 +106,7 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
         <div>
           <label
             htmlFor="calc-month"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             At month
           </label>
@@ -117,14 +117,14 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
             max={maxMonth}
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-24"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-24"
           />
         </div>
 
         <div>
           <label
             htmlFor="calc-amount"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             Extra payment (€)
           </label>
@@ -136,7 +136,7 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
             value={extraAmount}
             onChange={(e) => setExtraAmount(e.target.value)}
             required
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
             placeholder="5000"
           />
         </div>
@@ -151,7 +151,7 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
           <button
             type="button"
             onClick={() => { setExtras(undefined); setWarning(null); setExtraAmount(""); }}
-            className="py-2 px-4 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="py-2 px-4 bg-card border border-input text-label text-sm font-medium rounded-lg hover:bg-muted transition-colors"
           >
             Reset
           </button>
@@ -190,7 +190,7 @@ export function AmortizationCalculator({ loans }: AmortizationCalculatorProps) {
           <button
             type="button"
             onClick={() => exportCsv(originalSchedule, selectedLoan.name)}
-            className="py-1.5 px-3 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            className="py-1.5 px-3 text-sm border border-input rounded-lg text-label hover:bg-muted transition-colors"
           >
             ↓ Export schedule as CSV
           </button>

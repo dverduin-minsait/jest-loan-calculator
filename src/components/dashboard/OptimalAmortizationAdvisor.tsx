@@ -50,7 +50,7 @@ export function OptimalAmortizationAdvisor({
         <div>
           <label
             htmlFor="adv-amount"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             Extra payment (€)
           </label>
@@ -62,7 +62,7 @@ export function OptimalAmortizationAdvisor({
             value={extraAmount}
             onChange={(e) => setExtraAmount(e.target.value)}
             required
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-36"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-36"
             placeholder="5000"
           />
         </div>
@@ -70,7 +70,7 @@ export function OptimalAmortizationAdvisor({
         <div>
           <label
             htmlFor="adv-month"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-label mb-1"
           >
             At month
           </label>
@@ -81,7 +81,7 @@ export function OptimalAmortizationAdvisor({
             max={maxMonth}
             value={atMonth}
             onChange={(e) => setAtMonth(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-24"
+            className="px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-24"
           />
         </div>
 
@@ -95,7 +95,7 @@ export function OptimalAmortizationAdvisor({
           <button
             type="button"
             onClick={handleReset}
-            className="py-2 px-4 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="py-2 px-4 bg-card border border-input text-label text-sm font-medium rounded-lg hover:bg-muted transition-colors"
           >
             Reset
           </button>
@@ -144,26 +144,26 @@ export function OptimalAmortizationAdvisor({
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left pb-2 text-gray-500 font-medium pr-4" scope="col">#</th>
-                  <th className="text-left pb-2 text-gray-500 font-medium pr-4" scope="col">
+                <tr className="border-b border-border">
+                  <th className="text-left pb-2 text-muted-foreground font-medium pr-4" scope="col">#</th>
+                  <th className="text-left pb-2 text-muted-foreground font-medium pr-4" scope="col">
                     Loan
                   </th>
-                  <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
+                  <th className="text-right pb-2 text-muted-foreground font-medium pr-4" scope="col">
                     Rate
                   </th>
-                  <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
+                  <th className="text-right pb-2 text-muted-foreground font-medium pr-4" scope="col">
                     Balance
                   </th>
-                  <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
+                  <th className="text-right pb-2 text-muted-foreground font-medium pr-4" scope="col">
                     Interest saved
                   </th>
                   {hasInflation && (
-                    <th className="text-right pb-2 text-gray-500 font-medium pr-4" scope="col">
+                    <th className="text-right pb-2 text-muted-foreground font-medium pr-4" scope="col">
                       Real saved
                     </th>
                   )}
-                  <th className="text-right pb-2 text-gray-500 font-medium" scope="col">
+                  <th className="text-right pb-2 text-muted-foreground font-medium" scope="col">
                     Months saved
                   </th>
                 </tr>
@@ -172,26 +172,26 @@ export function OptimalAmortizationAdvisor({
                 {result.ranking.map((row, i) => (
                   <tr
                     key={row.loanId}
-                    className={`border-b border-gray-100 ${
+                    className={`border-b border-divider ${
                       i === 0 ? "bg-emerald-50 font-medium" : ""
                     }`}
                   >
-                    <td className="py-2 pr-4 text-gray-400">{i + 1}</td>
-                    <td className="py-2 pr-4 text-gray-900 flex items-center gap-1">
+                    <td className="py-2 pr-4 text-muted-foreground">{i + 1}</td>
+                    <td className="py-2 pr-4 text-foreground flex items-center gap-1">
                       {i === 0 && <span className="text-emerald-500">★</span>}
                       {row.loanName}
                     </td>
-                    <td className="py-2 pr-4 text-right text-gray-700">
+                    <td className="py-2 pr-4 text-right text-label">
                       {row.annualRate}%
                     </td>
-                    <td className="py-2 pr-4 text-right text-gray-700">
+                    <td className="py-2 pr-4 text-right text-label">
                       {fmt(row.currentBalance)}
                     </td>
                     <td
                       className={`py-2 pr-4 text-right ${
                         row.interestSaved > 0
                           ? "text-emerald-700 font-semibold"
-                          : "text-gray-400"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {row.interestSaved > 0
@@ -203,7 +203,7 @@ export function OptimalAmortizationAdvisor({
                         className={`py-2 pr-4 text-right ${
                           row.realInterestSaved > 0
                             ? "text-violet-700 font-semibold"
-                            : "text-gray-400"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {row.realInterestSaved > 0
@@ -215,7 +215,7 @@ export function OptimalAmortizationAdvisor({
                       className={`py-2 text-right ${
                         row.monthsSaved > 0
                           ? "text-emerald-700 font-semibold"
-                          : "text-gray-400"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {row.monthsSaved > 0 ? `−${row.monthsSaved}` : "—"}
@@ -226,7 +226,7 @@ export function OptimalAmortizationAdvisor({
             </table>
           </div>
 
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             Calculation assumes the extra payment is applied at the start of the
             specified month, with the regular monthly payment continuing as
             scheduled.{hasInflation && " \u201cReal saved\u201d discounts each payment by your expected inflation rate to show savings in today\u2019s purchasing power."}

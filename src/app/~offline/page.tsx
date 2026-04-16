@@ -2,13 +2,13 @@ import Link from "next/link";
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 max-w-md w-full text-center">
+    <div className="min-h-screen bg-muted flex items-center justify-center px-4">
+      <div className="bg-card rounded-xl border border-border shadow-sm p-8 max-w-md w-full text-center">
         <div className="text-5xl mb-4">📡</div>
-        <h1 className="text-xl font-semibold text-gray-900 mb-2">
+        <h1 className="text-xl font-semibold text-foreground mb-2">
           You&apos;re offline
         </h1>
-        <p className="text-sm text-gray-500 mb-6">
+        <p className="text-sm text-muted-foreground mb-6">
           This page isn&apos;t available without a connection. Your loan data
           and calculations are still accessible from pages you&apos;ve visited
           before.
