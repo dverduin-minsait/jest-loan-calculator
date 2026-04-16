@@ -292,6 +292,76 @@ describe("findOptimalAmortization", () => {
     const advice = findOptimalAmortization([sampleLoan], 2000, 3);
     expect(advice.warning).toBeUndefined();
   });
+
+  describe("inflation-adjusted ranking", () => {
+    // Scenario: two loans with the same principal but different rate+term combos.
+    //
+    // Loan A (longHighRate): 8% for 240 months — many future payments, so their
+    //   real value is heavily eroded by inflation.
+    // Loan B (shortLowRate): 5% for 24 months — payments are close in time and
+    //   barely discounted by inflation.
+    //
+    // Without inflation: Loan A wins every time (8% > 5%).
+    // With high inflation (12%/yr): Loan B's near-term payments are worth much
+    //   more in today's money, so prepaying it saves more in real terms.
+    const longHighRate: LoanData = {
+      id: "long-high",
+      name: "Long High Rate",
+      amount: 10000,
+      interest: 8,
+      months: 240,
+    };
+    const shortLowRate: LoanData = {
+      id: "short-low",
+      name: "Short Low Rate",
+      amount: 10000,
+      interest: 5,
+      months: 24,
+    };
+
+    it("without inflation the higher-rate loan wins (baseline)", () => {
+      const advice = findOptimalAmortization([longHighRate, shortLowRate], 2000, 1);
+      expect(advice.bestLoanId).toBe("long-high");
+    });
+
+    it("with high inflation the shorter-term loan wins in real terms", () => {
+      const longHighRateWithInflation: LoanData = { ...longHighRate, inflationRate: 12 };
+      const shortLowRateWithInflation: LoanData = { ...shortLowRate, inflationRate: 12 };
+      const advice = findOptimalAmortization(
+        [longHighRateWithInflation, shortLowRateWithInflation],
+        2000,
+        1
+      );
+      // Real winner flips: short-term loan's near-future payments are worth
+      // more in today's money, so eliminating them saves more real cost.
+      expect(advice.bestLoanId).toBe("short-low");
+      expect(advice.ranking[0].realInterestSaved).toBeGreaterThan(
+        advice.ranking[1].realInterestSaved
+      );
+    });
+
+    it("realInterestSaved equals interestSaved when inflationRate is 0", () => {
+      const advice = findOptimalAmortization([longHighRate, shortLowRate], 2000, 1);
+      for (const entry of advice.ranking) {
+        // Both values are sums of independently rounded numbers; over 240 months
+        // rounding artifacts can accumulate up to ~0.3, so we allow < 0.5 drift.
+        expect(entry.realInterestSaved).toBeCloseTo(entry.interestSaved, 0);
+      }
+    });
+
+    it("ranking is always sorted descending by realInterestSaved", () => {
+      const withInflation: LoanData[] = [longHighRate, shortLowRate].map((l) => ({
+        ...l,
+        inflationRate: 12,
+      }));
+      const advice = findOptimalAmortization(withInflation, 2000, 1);
+      for (let i = 1; i < advice.ranking.length; i++) {
+        expect(advice.ranking[i].realInterestSaved).toBeLessThanOrEqual(
+          advice.ranking[i - 1].realInterestSaved
+        );
+      }
+    });
+  });
 });
 
 describe("simulateMonthlyAvalanche", () => {
