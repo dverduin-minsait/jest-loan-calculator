@@ -30,7 +30,7 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  const loanData = loans.map((l) => ({
+  const loanData = loans.map((l: typeof loans[number]) => ({
     id: l.id,
     name: l.name,
     amount: l.amount,

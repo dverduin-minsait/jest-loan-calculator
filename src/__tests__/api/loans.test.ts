@@ -79,7 +79,7 @@ function makeRequest(body?: object, method = "GET") {
 
 describe("GET /api/loans", () => {
   it("returns 401 when not authenticated", async () => {
-    mockAuth.mockResolvedValueOnce(null);
+    mockAuth.mockResolvedValueOnce(null as never);
     const res = await getLoans();
     expect(res.status).toBe(401);
   });
@@ -103,7 +103,7 @@ describe("GET /api/loans", () => {
 
 describe("POST /api/loans", () => {
   it("returns 401 when not authenticated", async () => {
-    mockAuth.mockResolvedValueOnce(null);
+    mockAuth.mockResolvedValueOnce(null as never);
     const req = makeRequest(
       { name: "Loan", amount: 1000, interest: 5, months: 12 },
       "POST"
