@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { generateChartData, type LoanData, type ExtraPayment } from "@/lib/loan-calculations";
+import { ChartLegend, type LegendItem } from "@/components/ui/ChartLegend";
 
 const COLORS = [
   "#3b82f6",
@@ -39,21 +40,6 @@ function formatCurrencyShort(value: number) {
   return `€${Math.round(value)}`;
 }
 
-/** SVG line swatch for the custom legend */
-function LineSwatch({ color, dashed }: { color: string; dashed: boolean }) {
-  return (
-    <svg width="20" height="10" aria-hidden="true" className="shrink-0">
-      <line
-        x1="0" y1="5" x2="20" y2="5"
-        stroke={color}
-        strokeWidth={dashed ? 1.5 : 2}
-        strokeDasharray={dashed ? "4 2" : undefined}
-        strokeOpacity={dashed ? 0.8 : 1}
-      />
-    </svg>
-  );
-}
-
 export function DebtChart({ loans, extras }: DebtChartProps) {
   const data = generateChartData(loans, extras);
   const [isMobile, setIsMobile] = useState(false);
@@ -70,7 +56,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
   const useYears = maxMonths > 24;
   const hasInflation = data.some((d) => "totalReal" in d);
 
-  const legendItems = useMemo(() => [
+  const legendItems = useMemo<LegendItem[]>(() => [
     ...loans.flatMap((loan, i) => [
       {
         key: `${loan.id}-balance`,
@@ -193,15 +179,7 @@ export function DebtChart({ loans, extras }: DebtChartProps) {
         </LineChart>
       </ResponsiveContainer>
 
-      {/* Custom legend — CSS-controlled so it wraps cleanly on all screen sizes */}
-      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 px-1" role="list" aria-label="Chart legend">
-        {legendItems.map((item) => (
-          <div key={item.key} className="flex items-center gap-1.5 min-w-0 text-xs text-gray-600" role="listitem">
-            <LineSwatch color={item.color} dashed={item.dashed} />
-            <span className="truncate max-w-[140px] sm:max-w-none">{item.label}</span>
-          </div>
-        ))}
-      </div>
+      <ChartLegend items={legendItems} />
     </div>
   );
 }
