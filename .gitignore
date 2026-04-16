@@ -38,6 +38,10 @@ yarn-error.log*
 *.db-shm
 *.db-wal
 
+# Serwist
+public/sw*
+public/swe-worker*
+
 # vercel
 .vercel
 
