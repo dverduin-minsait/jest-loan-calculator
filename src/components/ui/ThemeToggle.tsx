@@ -1,25 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
-function getInitialDark(): boolean {
+function subscribeToTheme(callback: () => void): () => void {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  mq.addEventListener("change", callback);
+  window.addEventListener("theme-change", callback);
+  return () => {
+    mq.removeEventListener("change", callback);
+    window.removeEventListener("theme-change", callback);
+  };
+}
+
+function getThemeSnapshot(): boolean {
   const stored = localStorage.getItem("theme");
-  if (stored) return stored === "dark";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(() => {
-    const isDark = getInitialDark();
-    document.documentElement.classList.toggle("dark", isDark);
-    return isDark;
-  });
+  const dark = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
 
   function toggle() {
     const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
+    window.dispatchEvent(new Event("theme-change"));
   }
 
   return (
